@@ -1,8 +1,10 @@
 package modelo;
 // Generated 13 ene 2025, 12:32:46 by Hibernate Tools 6.5.1.Final
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Query;
@@ -63,6 +65,10 @@ public class Users implements java.io.Serializable {
 		this.reunionesesForProfesorId = reunionesesForProfesorId;
 		this.reunionesesForAlumnoId = reunionesesForAlumnoId;
 		this.horarioses = horarioses;
+	}
+
+	public Users(int idUsuario) {
+		// TODO Auto-generated constructor stub
 	}
 
 	public int getId() {
@@ -203,7 +209,7 @@ public class Users implements java.io.Serializable {
 				+ horarioses + "]";
 	}
 
-	public Users Login(String usuario, String contrasena) {
+	public int Login(String usuario, String contrasena) {
 		// TODO Auto-generated method stub
 
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
@@ -213,7 +219,38 @@ public class Users implements java.io.Serializable {
 		Query q = session.createQuery(hql);
 		Users usuarioComprobado = (Users) q.uniqueResult();
 
-		return usuarioComprobado;
+		return usuarioComprobado.id;
+	}
+
+	public ArrayList<Horarios> getHorarioById() {
+		// TODO Auto-generated method stub
+		ArrayList<Horarios> horarios = new ArrayList<Horarios>();
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Horarios where users = " + id + " ";
+		Query q = session.createQuery(hql);
+		List<?> filas = q.list();
+
+		for (int i = 0; i < filas.size(); i++) {
+			horarios.add((Horarios) filas.get(i));
+		}
+
+		return horarios;
+	}
+
+	public ArrayList<Users> getOtrosProfesores(int idUsuario) {
+		ArrayList<Users> profesores = new ArrayList<Users>();
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users where id != " + idUsuario + " AND tipos.name = 'profesor'";
+		Query q = session.createQuery(hql);
+		List<?> filas = q.list();
+
+		for (int i = 0; i < filas.size(); i++) {
+			profesores.add((Users) filas.get(i));
+		}
+
+		return profesores;
 	}
 
 }

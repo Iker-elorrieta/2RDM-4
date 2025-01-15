@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+
 import javax.swing.JOptionPane;
+
+import modelo.Horarios;
 import modelo.Users;
 import vista.Principal;
 import vista.Principal.enumAcciones;
@@ -19,7 +23,7 @@ public class Controlador implements ActionListener, MouseListener {
 	private Socket cliente;
 	private ObjectOutputStream dos;
 	private ObjectInputStream dis;
-	private Users usuario = new Users();
+	private int id = 0;
 
 	public Controlador(vista.Principal vistaPrincipal) {
 		this.vistaPrincipal = vistaPrincipal;
@@ -78,13 +82,13 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.flush();
 			dos.writeUTF(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
 			dos.flush();
-			usuario = (Users) dis.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+			id = dis.readInt();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		if (usuario != null) {
+		if (id != 0) {
 			System.out.println("Hola");
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_MENU);
 		} else {
@@ -99,13 +103,10 @@ public class Controlador implements ActionListener, MouseListener {
 		Object source = e.getSource();
 
 		if (source == this.vistaPrincipal.getPanelMenu().getLblFotoHorario()) {
-			System.out.println("Se hizo clic en el label de FotoHorario");
 			mAbrirHorario();
-		} else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoOtros()) {
-			System.out.println("Se hizo clic en el label de FotoOtros");
+		} else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoOtros()) {;
 			mAbrirHorarioOtros();
-		}else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoReuniones()) {
-			System.out.println("Se hizo clic en el label de FotoReun");
+		} else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoReuniones()) {
 			mAbrirReuniones();
 		}
 
@@ -113,17 +114,43 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void mAbrirReuniones() {
 		// TODO Auto-generated method stub
-		
+		try {
+			dos.writeInt(4);
+			dos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void mAbrirHorarioOtros() {
 		// TODO Auto-generated method stub
-		
+		try {
+			dos.writeInt(3);
+			dos.flush();
+			dos.writeInt(id);
+			dos.flush();
+			ArrayList<Users> profesores = (ArrayList<Users>) dis.readObject();
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void mAbrirHorario() {
 		// TODO Auto-generated method stub
+		try {
+			dos.writeInt(2);
+			dos.flush();
+			dos.writeInt(id);
+			dos.flush();
 
+			ArrayList<Horarios> horario = (ArrayList<Horarios>) dis.readObject();
+
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
