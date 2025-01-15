@@ -242,8 +242,6 @@ public class Users implements java.io.Serializable {
 			Horarios horario = (Horarios) filas.get(i);
 			int dia = conseguirDia(horario.getId().getDia());
 			int hora = Integer.parseInt(horario.getId().getHora());
-			System.out.println(dia);
-			System.out.println(hora);
 			planSemanal[hora-1][dia] = horario.getModulos().getNombre();
 		}
 

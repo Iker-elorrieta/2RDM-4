@@ -65,10 +65,8 @@ public class HiloServidor extends Thread {
 	private void verHorario(ObjectInputStream dis, ObjectOutputStream dos) {
 		// TODO Auto-generated method stub
 		try {
-			System.out.println("Ver horario metodo");
 			int idUsuario = (int) dis.readObject();
 			String[][] horario = new Users().getHorarioById(idUsuario);
-			System.out.println("Horarios"+ horario.length);
 			dos.writeObject(horario);
 			dos.flush();
 		} catch (IOException | ClassNotFoundException e) {

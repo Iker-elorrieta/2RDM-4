@@ -10,13 +10,11 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import modelo.Horarios;
 import modelo.Profesor;
-import modelo.Users;
 import vista.Principal;
 import vista.Principal.enumAcciones;
 
@@ -27,6 +25,7 @@ public class Controlador implements ActionListener, MouseListener {
 	private ObjectOutputStream dos;
 	private ObjectInputStream dis;
 	private int id = 0;
+	private ArrayList<Profesor> profesores;
 
 	public Controlador(vista.Principal vistaPrincipal) {
 		this.vistaPrincipal = vistaPrincipal;
@@ -54,6 +53,28 @@ public class Controlador implements ActionListener, MouseListener {
 		this.vistaPrincipal.getPanelMenu().getLblFotoHorario().addMouseListener(this);
 		this.vistaPrincipal.getPanelMenu().getLblFotoOtros().addMouseListener(this);
 		this.vistaPrincipal.getPanelMenu().getLblFotoReuniones().addMouseListener(this);
+		// VENTANA HORARIO
+		this.vistaPrincipal.getPanelHorario().getBtnVolver().addActionListener(this);
+		this.vistaPrincipal.getPanelHorario().getBtnVolver().setActionCommand(Principal.enumAcciones.VOLVER.toString());
+
+		this.vistaPrincipal.getPanelHorario().getBtnPendientes().addActionListener(this);
+		this.vistaPrincipal.getPanelHorario().getBtnPendientes()
+				.setActionCommand(Principal.enumAcciones.TAREAS_PENDIENTES.toString());
+		// VENTANA LISTA
+		this.vistaPrincipal.getPanelLista().getBtnConfirmar().addActionListener(this);
+		this.vistaPrincipal.getPanelLista().getBtnConfirmar()
+				.setActionCommand(Principal.enumAcciones.CONFIRMAR_REUNION.toString());
+
+		this.vistaPrincipal.getPanelLista().getBtnRechazar().addActionListener(this);
+		this.vistaPrincipal.getPanelLista().getBtnRechazar()
+				.setActionCommand(Principal.enumAcciones.RECHAZAR_REUNION.toString());
+
+		this.vistaPrincipal.getPanelLista().getBtnSeleccionar().addActionListener(this);
+		this.vistaPrincipal.getPanelLista().getBtnSeleccionar()
+				.setActionCommand(Principal.enumAcciones.SELECCIONAR_PROFESOR.toString());
+
+		this.vistaPrincipal.getPanelLista().getBtnVolver().addActionListener(this);
+		this.vistaPrincipal.getPanelLista().getBtnVolver().setActionCommand(Principal.enumAcciones.VOLVER.toString());
 
 	}
 
@@ -69,9 +90,53 @@ public class Controlador implements ActionListener, MouseListener {
 		case DESCONECTAR:
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LOGIN);
 			break;
+		case VOLVER:
+			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_MENU);
+			this.vistaPrincipal.getPanelLista().getBtnSeleccionar().setVisible(false);
+			this.vistaPrincipal.getPanelLista().getBtnRechazar().setVisible(false);
+			this.vistaPrincipal.getPanelLista().getBtnConfirmar().setVisible(false);
+			break;
+		case TAREAS_PENDIENTES:
+			break;
+		case SELECCIONAR_PROFESOR:
+			seleccionarProfesor();
+			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
+			break;
+		case CONFIRMAR_REUNION:
+			break;
+		case RECHAZAR_REUNION:
+			break;
+
 		default:
 			break;
 
+		}
+	}
+
+	private void seleccionarProfesor() {
+		// TODO Auto-generated method stub
+		if (!this.vistaPrincipal.getPanelLista().getListaProfesor().isSelectionEmpty()) {
+			try {
+				dos.writeObject(2);
+				dos.flush();
+				int idprofesor = 0;
+				for (Profesor profesor : profesores) {
+					if (profesor.getNombre()
+							.equals(this.vistaPrincipal.getPanelLista().getListaProfesor().getSelectedValue())) {
+						idprofesor = profesor.getId();
+
+					}
+				}
+				dos.writeObject(idprofesor);
+				dos.flush();
+				cargarHorario((String[][]) dis.readObject(), this.vistaPrincipal.getPanelHorario().getTablaHorario());
+			} catch (IOException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		} else {
+			JOptionPane.showMessageDialog(null, "Debes seleccionar un profesor de la lista");
 		}
 	}
 
@@ -126,6 +191,7 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void mAbrirHorarioOtros() {
 		// TODO Auto-generated method stub
 		try {
@@ -133,13 +199,30 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.flush();
 			dos.writeObject(id);
 			dos.flush();
-			@SuppressWarnings("unchecked")
-			ArrayList<Profesor> profesores = (ArrayList<Profesor>) dis.readObject();
+			profesores = (ArrayList<Profesor>) dis.readObject();
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
+			ArrayList<String> modelo = new ArrayList<String>();
+			for (Profesor profesor : profesores) {
+				modelo.add(profesor.getNombre());
+			}
+			this.vistaPrincipal.getPanelLista().getBtnSeleccionar().setVisible(true);
+			cargarLista(modelo);
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void cargarLista(ArrayList<String> datos) {
+		// TODO Auto-generated method stub
+		String[] arrayDatos = datos.toArray(new String[0]);
+
+		DefaultListModel<String> modelo = new DefaultListModel<>();
+		for (String dato : arrayDatos) {
+			modelo.addElement(dato);
+		}
+
+		this.vistaPrincipal.getPanelLista().getListaProfesor().setModel(modelo);
 	}
 
 	private void mAbrirHorario() {
