@@ -25,7 +25,7 @@ public class HiloServidor extends Thread {
 			ObjectInputStream dis = new ObjectInputStream(conexionCli.getInputStream());
 			while (!terminar) {
 
-				opcion = dis.readInt();
+				opcion = (int) dis.readObject();
 
 				switch (opcion) {
 				case 1:
@@ -42,7 +42,7 @@ public class HiloServidor extends Thread {
 				}
 
 			}
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -51,11 +51,11 @@ public class HiloServidor extends Thread {
 	private void verOtrosHorarios(ObjectInputStream dis, ObjectOutputStream dos) {
 		// TODO Auto-generated method stub
 		try {
-			int idUsuario = dis.readInt();
-			ArrayList<Users> profesores = new Users().getOtrosProfesores(idUsuario);
+			int idUsuario = (int) dis.readObject();
+			ArrayList<Profesor> profesores = new Users().getOtrosProfesores(idUsuario);
 			dos.writeObject(profesores);
 			dos.flush();
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -65,11 +65,13 @@ public class HiloServidor extends Thread {
 	private void verHorario(ObjectInputStream dis, ObjectOutputStream dos) {
 		// TODO Auto-generated method stub
 		try {
-			int idUsuario = dis.readInt();
-			ArrayList<Horarios> horarios = new Users(idUsuario).getHorarioById();
-			dos.writeObject(horarios);
+			System.out.println("Ver horario metodo");
+			int idUsuario = (int) dis.readObject();
+			String[][] horario = new Users().getHorarioById(idUsuario);
+			System.out.println("Horarios"+ horario.length);
+			dos.writeObject(horario);
 			dos.flush();
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -80,12 +82,12 @@ public class HiloServidor extends Thread {
 		// TODO Auto-generated method stub
 
 		try {
-			String usuario = dis.readUTF();
-			String password = dis.readUTF();
+			String usuario = (String) dis.readObject();
+			String password = (String) dis.readObject();
 			int usuarioComprobado = new Users().Login(usuario, password);
 			dos.writeObject(usuarioComprobado);
 			dos.flush();
-		} catch (IOException e) {
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

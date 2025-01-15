@@ -218,28 +218,61 @@ public class Users implements java.io.Serializable {
 				+ "' AND tipos.name = 'profesor' ";
 		Query q = session.createQuery(hql);
 		Users usuarioComprobado = (Users) q.uniqueResult();
-
-		return usuarioComprobado.id;
+		if (usuarioComprobado == null) {
+			return 0;
+		} else {
+			return usuarioComprobado.id;
+		}
 	}
 
-	public ArrayList<Horarios> getHorarioById() {
+	public String[][] getHorarioById(int idUsuario) {
 		// TODO Auto-generated method stub
-		ArrayList<Horarios> horarios = new ArrayList<Horarios>();
+		String[][] planSemanal = {
+				{ "1ra", "", "", "", "", "", "", "" }, { "2da", "", "", "", "", "", "", "" },
+				{ "3ra", "", "", "", "", "", "", "" }, { "4ta", "", "", "", "", "", "", "" },
+				{ "5ta", "", "", "", "", "", "", "" } };
+
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
-		String hql = "from Horarios where users = " + id + " ";
+		String hql = "from Horarios where users = " + idUsuario + " ";
 		Query q = session.createQuery(hql);
 		List<?> filas = q.list();
 
 		for (int i = 0; i < filas.size(); i++) {
-			horarios.add((Horarios) filas.get(i));
+			Horarios horario = (Horarios) filas.get(i);
+			int dia = conseguirDia(horario.getId().getDia());
+			int hora = Integer.parseInt(horario.getId().getHora());
+			System.out.println(dia);
+			System.out.println(hora);
+			planSemanal[hora-1][dia] = horario.getModulos().getNombre();
 		}
 
-		return horarios;
+		return planSemanal;
 	}
 
-	public ArrayList<Users> getOtrosProfesores(int idUsuario) {
-		ArrayList<Users> profesores = new ArrayList<Users>();
+	private int conseguirDia(String string) {
+		// TODO Auto-generated method stub
+		int dia = 0;
+		if (string.equals("L/A")) {
+			dia = 1;
+		} else if (string.equals("M/A")) {
+			dia = 2;
+		} else if (string.equals("X")) {
+			dia = 3;
+		} else if (string.equals("J/O")) {
+			dia = 4;
+		} else if (string.equals("V/O")) {
+			dia = 5;
+		} else if (string.equals("S/L")) {
+			dia = 6;
+		} else if (string.equals("D/I")) {
+			dia = 7;
+		}
+		return dia;
+	}
+
+	public ArrayList<Profesor> getOtrosProfesores(int idUsuario) {
+		ArrayList<Profesor> profesores = new ArrayList<Profesor>();
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
 		String hql = "from Users where id != " + idUsuario + " AND tipos.name = 'profesor'";
@@ -247,7 +280,8 @@ public class Users implements java.io.Serializable {
 		List<?> filas = q.list();
 
 		for (int i = 0; i < filas.size(); i++) {
-			profesores.add((Users) filas.get(i));
+			Users usuario = (Users) filas.get(i);
+			profesores.add(new Profesor(usuario.getId(), usuario.getNombre()));
 		}
 
 		return profesores;

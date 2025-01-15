@@ -13,13 +13,15 @@ public class Principal extends JFrame {
 
 	// Acciones
 	public static enum enumAcciones {
-		CARGAR_PANEL_LOGIN, CARGAR_PANEL_MENU,LOGIN,DESCONECTAR
+		CARGAR_PANEL_LOGIN, CARGAR_PANEL_MENU, LOGIN, DESCONECTAR, CARGAR_PANEL_HORARIO, CARGAR_PANEL_LISTA
 
 	}
 
 	private JPanel panelContenedor;
 	private PanelLogin panelLogin;
 	private PanelMenu panelMenu;
+	private PanelHorario panelHorario;
+	private PanelLista panelLista;
 
 	public Principal() {
 		setResizable(false);
@@ -29,6 +31,26 @@ public class Principal extends JFrame {
 		// Panel que contiene el listado de contactos.
 		mCrearPanelLogin();
 		mCrearPanelMenu();
+		mCrearPanelHorario();
+		mCrearPanelLista();
+	}
+
+	private void mCrearPanelLista() {
+		// TODO Auto-generated method stub
+		panelLista = new PanelLista();
+		panelLista.setLocation(0, 11);
+		panelContenedor.add(panelLista);
+		panelContenedor.setBounds(panelLista.getBounds());
+		panelLista.setVisible(false);
+	}
+
+	private void mCrearPanelHorario() {
+		// TODO Auto-generated method stub
+		panelHorario = new PanelHorario();
+		panelHorario.setLocation(0, 11);
+		panelContenedor.add(panelHorario);
+		panelContenedor.setBounds(panelHorario.getBounds());
+		panelHorario.setVisible(false);
 	}
 
 	private void mCrearPanelMenu() {
@@ -37,7 +59,7 @@ public class Principal extends JFrame {
 		panelMenu.setLocation(0, 11);
 		panelContenedor.add(panelMenu);
 		panelContenedor.setBounds(panelMenu.getBounds());
-		panelMenu.setVisible(true);
+		panelMenu.setVisible(false);
 	}
 
 	// *** Creaci�n de paneles ***
@@ -67,13 +89,21 @@ public class Principal extends JFrame {
 
 		panelLogin.setVisible(false);
 		panelMenu.setVisible(false);
-
+		panelHorario.setVisible(false);
+		panelLista.setVisible(false);
 		switch (panel) {
 		case CARGAR_PANEL_LOGIN:
 			panelLogin.setVisible(true);
 			break;
 		case CARGAR_PANEL_MENU:
 			panelMenu.setVisible(true);
+			break;
+		case CARGAR_PANEL_HORARIO:
+			panelHorario.setVisible(true);
+			break;
+		case CARGAR_PANEL_LISTA:
+			panelLista.setVisible(true);
+			break;
 		default:
 			break;
 
@@ -102,6 +132,22 @@ public class Principal extends JFrame {
 
 	public void setPanelMenu(PanelMenu panelMenu) {
 		this.panelMenu = panelMenu;
+	}
+
+	public PanelHorario getPanelHorario() {
+		return panelHorario;
+	}
+
+	public void setPanelHorario(PanelHorario panelHorario) {
+		this.panelHorario = panelHorario;
+	}
+
+	public PanelLista getPanelLista() {
+		return panelLista;
+	}
+
+	public void setPanelLista(PanelLista panelLista) {
+		this.panelLista = panelLista;
 	}
 
 }

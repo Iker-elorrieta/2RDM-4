@@ -15,6 +15,7 @@ public class Servidor {
 		boolean terminar = false;
 		try {
 			servidor = new ServerSocket(2000);
+			System.out.println("Servidor Encendido");
 			while (!terminar) {
 				Socket conexionCli = servidor.accept();
 				HiloServidor hiloServidor = new HiloServidor(conexionCli);

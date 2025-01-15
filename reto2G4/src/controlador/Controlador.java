@@ -11,8 +11,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 import modelo.Horarios;
+import modelo.Profesor;
 import modelo.Users;
 import vista.Principal;
 import vista.Principal.enumAcciones;
@@ -76,14 +79,14 @@ public class Controlador implements ActionListener, MouseListener {
 		// TODO Auto-generated method stub
 
 		try {
-			dos.writeInt(1);
+			dos.writeObject(1);
 			dos.flush();
-			dos.writeUTF(this.vistaPrincipal.getPanelLogin().getTextFieldUser().getText());
+			dos.writeObject(this.vistaPrincipal.getPanelLogin().getTextFieldUser().getText());
 			dos.flush();
-			dos.writeUTF(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
+			dos.writeObject(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
 			dos.flush();
-			id = dis.readInt();
-		} catch (IOException e) {
+			id = (int) dis.readObject();
+		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -104,7 +107,7 @@ public class Controlador implements ActionListener, MouseListener {
 
 		if (source == this.vistaPrincipal.getPanelMenu().getLblFotoHorario()) {
 			mAbrirHorario();
-		} else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoOtros()) {;
+		} else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoOtros()) {
 			mAbrirHorarioOtros();
 		} else if (source == this.vistaPrincipal.getPanelMenu().getLblFotoReuniones()) {
 			mAbrirReuniones();
@@ -115,7 +118,7 @@ public class Controlador implements ActionListener, MouseListener {
 	private void mAbrirReuniones() {
 		// TODO Auto-generated method stub
 		try {
-			dos.writeInt(4);
+			dos.writeObject(4);
 			dos.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -126,11 +129,13 @@ public class Controlador implements ActionListener, MouseListener {
 	private void mAbrirHorarioOtros() {
 		// TODO Auto-generated method stub
 		try {
-			dos.writeInt(3);
+			dos.writeObject(3);
 			dos.flush();
-			dos.writeInt(id);
+			dos.writeObject(id);
 			dos.flush();
-			ArrayList<Users> profesores = (ArrayList<Users>) dis.readObject();
+			@SuppressWarnings("unchecked")
+			ArrayList<Profesor> profesores = (ArrayList<Profesor>) dis.readObject();
+			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -140,17 +145,35 @@ public class Controlador implements ActionListener, MouseListener {
 	private void mAbrirHorario() {
 		// TODO Auto-generated method stub
 		try {
-			dos.writeInt(2);
+			dos.writeObject(2);
 			dos.flush();
-			dos.writeInt(id);
+			dos.writeObject(id);
 			dos.flush();
 
-			ArrayList<Horarios> horario = (ArrayList<Horarios>) dis.readObject();
-
+			String[][] horario = (String[][]) dis.readObject();
+			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
+			cargarHorario(horario, this.vistaPrincipal.getPanelHorario().getTablaHorario());
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void cargarHorario(String[][] horario, JTable tabla) {
+		// TODO Auto-generated method stub
+
+		// Crear un modelo de tabla no editable
+		DefaultTableModel modelo = new DefaultTableModel(horario,
+				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+
+		tabla.setModel(modelo);
 	}
 
 	@Override
