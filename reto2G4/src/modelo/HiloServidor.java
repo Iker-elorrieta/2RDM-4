@@ -1,10 +1,9 @@
 package modelo;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class HiloServidor extends Thread {
 
@@ -21,33 +20,38 @@ public class HiloServidor extends Thread {
 		boolean terminar = false;
 
 		try {
-			ObjectOutputStream dos = new ObjectOutputStream(conexionCli.getOutputStream());
-			ObjectInputStream dis = new ObjectInputStream(conexionCli.getInputStream());
+			DataOutputStream dos = new DataOutputStream(conexionCli.getOutputStream());
+			DataInputStream dis = new DataInputStream(conexionCli.getInputStream());
 			while (!terminar) {
 
-				opcion = (int) dis.readObject();
+				opcion = (int) dis.readInt();
 
 				switch (opcion) {
 				case 1:
 					login(dis, dos);
 					break;
 				case 2:
-					verHorario(dis, dos);
+				//	verHorario(dis, dos);
 					break;
 				case 3:
-					verOtrosHorarios(dis, dos);
+				//	verOtrosHorarios(dis, dos);
 					break;
+					
+				case 4: 
+					terminar = true;
 				default:
 					break;
 				}
 
 			}
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	
+	//BLOQUEADO PARA ESTE SPRING
+/*
 	private void verOtrosHorarios(ObjectInputStream dis, ObjectOutputStream dos) {
 		// TODO Auto-generated method stub
 		try {
@@ -75,17 +79,17 @@ public class HiloServidor extends Thread {
 		}
 
 	}
-
-	private void login(ObjectInputStream dis, ObjectOutputStream dos) {
+*/
+	private void login(DataInputStream dis, DataOutputStream dos) {
 		// TODO Auto-generated method stub
 
 		try {
-			String usuario = (String) dis.readObject();
-			String password = (String) dis.readObject();
+			String usuario =  dis.readUTF();
+			String password = dis.readUTF();
 			int usuarioComprobado = new Users().Login(usuario, password);
-			dos.writeObject(usuarioComprobado);
+			dos.writeInt(usuarioComprobado);
 			dos.flush();
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException  e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

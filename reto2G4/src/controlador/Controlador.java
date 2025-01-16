@@ -4,16 +4,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+
 import modelo.Profesor;
 import vista.Principal;
 import vista.Principal.enumAcciones;
@@ -22,8 +20,9 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private vista.Principal vistaPrincipal;
 	private Socket cliente;
-	private ObjectOutputStream dos;
-	private ObjectInputStream dis;
+	private DataOutputStream dos;
+	private DataInputStream dis;
+	// Lo cambiamos para este sprint tenias razon gacen falta los dos
 	private int id = 0;
 	private ArrayList<Profesor> profesores;
 
@@ -34,14 +33,6 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void inicializarControlador() {
 
-		try {
-			cliente = new Socket("localhost", 2000);
-			dos = new ObjectOutputStream(cliente.getOutputStream());
-			dis = new ObjectInputStream(cliente.getInputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// VENTANA LOGIN
 		this.vistaPrincipal.getPanelLogin().getBtnLogin().addActionListener(this);
 		this.vistaPrincipal.getPanelLogin().getBtnLogin().setActionCommand(Principal.enumAcciones.LOGIN.toString());
@@ -85,10 +76,23 @@ public class Controlador implements ActionListener, MouseListener {
 
 		switch (accion) {
 		case LOGIN:
+			incializarServidor();
 			this.mConfirmarLogin(accion);
 			break;
 		case DESCONECTAR:
+			try {
+				dos.writeInt(4);
+
+				dis.close();
+				dos.close();
+				cliente.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LOGIN);
+
 			break;
 		case VOLVER:
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_MENU);
@@ -113,24 +117,37 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 	}
 
+	private void incializarServidor() {
+		// TODO Auto-generated method stub
+		try {
+			cliente = new Socket("localhost", 2000);
+			dos = new DataOutputStream(cliente.getOutputStream());
+			dis = new DataInputStream(cliente.getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+// He tenido que cambiar para que funcione todo con lo que viene ser datos primitvos tipo int por lo cual no puedo hacer casteo
 	private void seleccionarProfesor() {
 		// TODO Auto-generated method stub
 		if (!this.vistaPrincipal.getPanelLista().getListaProfesor().isSelectionEmpty()) {
 			try {
-				dos.writeObject(2);
+				dos.writeInt(2);
 				dos.flush();
-				int idprofesor = 0;
+				// int idprofesor = 0;
 				for (Profesor profesor : profesores) {
 					if (profesor.getNombre()
 							.equals(this.vistaPrincipal.getPanelLista().getListaProfesor().getSelectedValue())) {
-						idprofesor = profesor.getId();
-
+						// idprofesor = profesor.getId();
 					}
 				}
-				dos.writeObject(idprofesor);
+				// dos.writeObject(idprofesor);
 				dos.flush();
-				cargarHorario((String[][]) dis.readObject(), this.vistaPrincipal.getPanelHorario().getTablaHorario());
-			} catch (IOException | ClassNotFoundException e) {
+				// cargarHorario((String[][]) dis.readObject(),
+				// this.vistaPrincipal.getPanelHorario().getTablaHorario());
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -144,14 +161,14 @@ public class Controlador implements ActionListener, MouseListener {
 		// TODO Auto-generated method stub
 
 		try {
-			dos.writeObject(1);
+			dos.writeInt(1);
 			dos.flush();
-			dos.writeObject(this.vistaPrincipal.getPanelLogin().getTextFieldUser().getText());
+			dos.writeUTF(this.vistaPrincipal.getPanelLogin().getTextFieldUser().getText());
 			dos.flush();
-			dos.writeObject(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
+			dos.writeUTF(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
 			dos.flush();
-			id = (int) dis.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+			id = (int) dis.readInt();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -182,82 +199,70 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void mAbrirReuniones() {
 		// TODO Auto-generated method stub
-		try {
-			dos.writeObject(4);
-			dos.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
+
+		/*
+		 * try { dos.writeObject(4); dos.flush(); } catch (IOException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 */
 	}
 
-	@SuppressWarnings("unchecked")
 	private void mAbrirHorarioOtros() {
 		// TODO Auto-generated method stub
-		try {
-			dos.writeObject(3);
-			dos.flush();
-			dos.writeObject(id);
-			dos.flush();
-			profesores = (ArrayList<Profesor>) dis.readObject();
-			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
-			ArrayList<String> modelo = new ArrayList<String>();
-			for (Profesor profesor : profesores) {
-				modelo.add(profesor.getNombre());
-			}
-			this.vistaPrincipal.getPanelLista().getBtnSeleccionar().setVisible(true);
-			cargarLista(modelo);
-		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
+		/// BLOQUEADO PARA ESTE SPRING
+		/*
+		 * try { dos.writeObject(3); dos.flush(); dos.writeObject(id); dos.flush();
+		 * profesores = (ArrayList<Profesor>) dis.readObject();
+		 * this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
+		 * ArrayList<String> modelo = new ArrayList<String>(); for (Profesor profesor :
+		 * profesores) { modelo.add(profesor.getNombre()); }
+		 * this.vistaPrincipal.getPanelLista().getBtnSeleccionar().setVisible(true);
+		 * cargarLista(modelo); } catch (IOException | ClassNotFoundException e) { //
+		 * TODO Auto-generated catch block e.printStackTrace(); }
+		 */
 	}
 
-	private void cargarLista(ArrayList<String> datos) {
-		// TODO Auto-generated method stub
-		String[] arrayDatos = datos.toArray(new String[0]);
-
-		DefaultListModel<String> modelo = new DefaultListModel<>();
-		for (String dato : arrayDatos) {
-			modelo.addElement(dato);
-		}
-
-		this.vistaPrincipal.getPanelLista().getListaProfesor().setModel(modelo);
-	}
+	/*
+	 * private void cargarLista(ArrayList<String> datos) { // TODO Auto-generated
+	 * method stub String[] arrayDatos = datos.toArray(new String[0]);
+	 * 
+	 * DefaultListModel<String> modelo = new DefaultListModel<>(); for (String dato
+	 * : arrayDatos) { modelo.addElement(dato); }
+	 * 
+	 * this.vistaPrincipal.getPanelLista().getListaProfesor().setModel(modelo); }
+	 */
 
 	private void mAbrirHorario() {
 		// TODO Auto-generated method stub
-		try {
-			dos.writeObject(2);
-			dos.flush();
-			dos.writeObject(id);
-			dos.flush();
-
-			String[][] horario = (String[][]) dis.readObject();
-			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
-			cargarHorario(horario, this.vistaPrincipal.getPanelHorario().getTablaHorario());
-		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
+//BLOQUEADO PARA ESTE SPRING
+		/*
+		 * try { dos.writeInt(2); dos.flush(); dos.writeInt(id); dos.flush();
+		 * 
+		 * String[][] horario = (String[][]) dis.readObject();
+		 * this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
+		 * cargarHorario(horario,
+		 * this.vistaPrincipal.getPanelHorario().getTablaHorario()); } catch
+		 * (IOException | ClassNotFoundException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 	}
 
-	private void cargarHorario(String[][] horario, JTable tabla) {
-		// TODO Auto-generated method stub
-
-		// Crear un modelo de tabla no editable
-		DefaultTableModel modelo = new DefaultTableModel(horario,
-				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
-
-		tabla.setModel(modelo);
-	}
+	/*
+	 * private void cargarHorario(String[][] horario, JTable tabla) {
+	 * 
+	 * // Crear un modelo de tabla no editable DefaultTableModel modelo = new
+	 * DefaultTableModel(horario, new String[] { "Hora/Día", "Lunes", "Martes",
+	 * "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }) { private static
+	 * final long serialVersionUID = 1L;
+	 * 
+	 * @Override public boolean isCellEditable(int row, int column) { return false;
+	 * } };
+	 * 
+	 * tabla.setModel(modelo); }
+	 */
 
 	@Override
 	public void mousePressed(MouseEvent e) {
