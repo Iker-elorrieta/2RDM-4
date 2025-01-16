@@ -284,5 +284,37 @@ public class Users implements java.io.Serializable {
 
 		return profesores;
 	}
+	
+	public void crearClientePrueba() {
+	    SessionFactory sesion = HibernateUtil.getSessionFactory();
+	    Session session = sesion.openSession();
+	    session.beginTransaction();
+
+	    String hql = "from Users where username = 'cliente_prueba'";
+	    Query query = session.createQuery(hql);
+	    Users clienteExistente = (Users) query.uniqueResult();
+
+	    if (clienteExistente == null) {
+	        Users clientePrueba = new Users();
+	        clientePrueba.setUsername("cliente_prueba");
+	        clientePrueba.setPassword("1234");
+	        clientePrueba.setNombre("Cliente");
+	        clientePrueba.setApellidos("Prueba");
+	        clientePrueba.setEmail("cliente@prueba.com");
+	        Tipos tipo = new Tipos();
+	        tipo.setId(3);
+	    
+	        clientePrueba.setTipos(tipo); 
+
+	        session.save(clientePrueba);
+	        System.out.println("Cliente de prueba creado .");
+	    } else {
+	        System.out.println("El cliente de prueba ya existe.");
+	    }
+
+	    session.getTransaction().commit();
+	    session.close();
+	}
+
 
 }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 import modelo.Profesor;
+import modelo.Users;
 import vista.Principal;
 import vista.Principal.enumAcciones;
 
@@ -168,6 +169,8 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.writeUTF(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
 			dos.flush();
 			id = (int) dis.readInt();
+			
+			new Users().crearClientePrueba();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
