@@ -227,8 +227,7 @@ public class Users implements java.io.Serializable {
 
 	public String[][] getHorarioById(int idUsuario) {
 		// TODO Auto-generated method stub
-		String[][] planSemanal = {
-				{ "1ra", "", "", "", "", "", "", "" }, { "2da", "", "", "", "", "", "", "" },
+		String[][] planSemanal = { { "1ra", "", "", "", "", "", "", "" }, { "2da", "", "", "", "", "", "", "" },
 				{ "3ra", "", "", "", "", "", "", "" }, { "4ta", "", "", "", "", "", "", "" },
 				{ "5ta", "", "", "", "", "", "", "" } };
 
@@ -242,7 +241,7 @@ public class Users implements java.io.Serializable {
 			Horarios horario = (Horarios) filas.get(i);
 			int dia = conseguirDia(horario.getId().getDia());
 			int hora = Integer.parseInt(horario.getId().getHora());
-			planSemanal[hora-1][dia] = horario.getModulos().getNombre();
+			planSemanal[hora - 1][dia] = horario.getModulos().getNombre();
 		}
 
 		return planSemanal;
@@ -269,8 +268,8 @@ public class Users implements java.io.Serializable {
 		return dia;
 	}
 
-	public ArrayList<Profesor> getOtrosProfesores(int idUsuario) {
-		ArrayList<Profesor> profesores = new ArrayList<Profesor>();
+	public ArrayList<String> getOtrosProfesores(int idUsuario) {
+		ArrayList<String> profesores = new ArrayList<String>();
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
 		String hql = "from Users where id != " + idUsuario + " AND tipos.name = 'profesor'";
@@ -279,42 +278,45 @@ public class Users implements java.io.Serializable {
 
 		for (int i = 0; i < filas.size(); i++) {
 			Users usuario = (Users) filas.get(i);
-			profesores.add(new Profesor(usuario.getId(), usuario.getNombre()));
+			profesores.add(usuario.getId() + ";" + usuario.getNombre());
 		}
 
 		return profesores;
 	}
-	
+
 	public void crearClientePrueba() {
-	    SessionFactory sesion = HibernateUtil.getSessionFactory();
-	    Session session = sesion.openSession();
-	    session.beginTransaction();
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		session.beginTransaction();
 
-	    String hql = "from Users where username = 'cliente_prueba'";
-	    Query query = session.createQuery(hql);
-	    Users clienteExistente = (Users) query.uniqueResult();
+		String hql = "from Users where username = 'cliente_prueba'";
+		Query query = session.createQuery(hql);
+		Users clienteExistente = (Users) query.uniqueResult();
 
-	    if (clienteExistente == null) {
-	        Users clientePrueba = new Users();
-	        clientePrueba.setUsername("cliente_prueba");
-	        clientePrueba.setPassword("1234");
-	        clientePrueba.setNombre("Cliente");
-	        clientePrueba.setApellidos("Prueba");
-	        clientePrueba.setEmail("cliente@prueba.com");
-	        Tipos tipo = new Tipos();
-	        tipo.setId(3);
-	    
-	        clientePrueba.setTipos(tipo); 
+		if (clienteExistente == null) {
+			Users clientePrueba = new Users();
+			clientePrueba.setUsername("cliente_prueba");
+			clientePrueba.setPassword("1234");
+			clientePrueba.setNombre("Cliente");
+			clientePrueba.setApellidos("Prueba");
+			clientePrueba.setEmail("cliente@prueba.com");
+			Tipos tipo = new Tipos();
+			tipo.setId(3);
 
-	        session.save(clientePrueba);
-	        System.out.println("Cliente de prueba creado .");
-	    } else {
-	        System.out.println("El cliente de prueba ya existe.");
-	    }
+			clientePrueba.setTipos(tipo);
 
-	    session.getTransaction().commit();
-	    session.close();
+			session.save(clientePrueba);
+			System.out.println("Cliente de prueba creado .");
+		} else {
+			System.out.println("El cliente de prueba ya existe.");
+		}
+
+		session.getTransaction().commit();
+		session.close();
 	}
 
+
+
+	
 
 }

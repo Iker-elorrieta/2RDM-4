@@ -60,7 +60,7 @@ public class PanelHorario extends JPanel {
 		lblTitulo.setBounds(61, 29, 355, 35);
 		add(lblTitulo);
 
-		btnPendientes = new JButton("Ver Tareas Pendientes");
+		btnPendientes = new JButton("Ver Tareas");
 		btnPendientes.setVisible(false);
 		btnPendientes.setFont(new Font("Arial", Font.PLAIN, 16));
 		btnPendientes.setBounds(227, 446, 223, 35);

@@ -13,8 +13,6 @@ public class PanelLista extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JList<String> lista;
 	private JButton btnVolver, btnSeleccionar;
-	private JButton btnConfirmar;
-	private JButton btnRechazar;
 
 	/**
 	 * Create the panel.
@@ -37,22 +35,9 @@ public class PanelLista extends JPanel {
 		add(btnVolver);
 
 		btnSeleccionar = new JButton("Seleccionar");
-		btnSeleccionar.setVisible(false);
 		btnSeleccionar.setFont(new Font("Arial", Font.PLAIN, 16));
 		btnSeleccionar.setBounds(402, 154, 240, 37);
 		add(btnSeleccionar);
-
-		btnConfirmar = new JButton("Confirmar Reunion");
-		btnConfirmar.setVisible(false);
-		btnConfirmar.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnConfirmar.setBounds(402, 219, 240, 37);
-		add(btnConfirmar);
-
-		btnRechazar = new JButton("Rechazar reunion");
-		btnRechazar.setVisible(false);
-		btnRechazar.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnRechazar.setBounds(402, 284, 240, 37);
-		add(btnRechazar);
 	}
 
 	public JList<String> getListaProfesor() {
@@ -79,19 +64,4 @@ public class PanelLista extends JPanel {
 		this.btnSeleccionar = btnSeleccionar;
 	}
 
-	public JButton getBtnConfirmar() {
-		return btnConfirmar;
-	}
-
-	public void setBtnConfirmar(JButton btnConfirmar) {
-		this.btnConfirmar = btnConfirmar;
-	}
-
-	public JButton getBtnRechazar() {
-		return btnRechazar;
-	}
-
-	public void setBtnRechazar(JButton btnRechazar) {
-		this.btnRechazar = btnRechazar;
-	}
 }
