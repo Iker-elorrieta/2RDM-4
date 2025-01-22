@@ -15,6 +15,7 @@ public class HiloServidor extends Thread {
 	public HiloServidor(Socket conexionCli) {
 		// TODO Auto-generated constructor stub
 		this.conexionCli = conexionCli;
+	//	new Users().cifrarContrasenas(); //Hacer una vez
 	}
 
 	public void run() {
@@ -29,10 +30,12 @@ public class HiloServidor extends Thread {
 			ObjectInputStream ois = new ObjectInputStream(conexionCli.getInputStream());
 
 			oos.writeObject(new Centros().obtenerCentros());
+			
 			oos.flush();
 			while (!terminar) {
 
 				opcion = dis.readInt();
+				System.out.println("Opcion selecionada: " + opcion);
 				switch (opcion) {
 				case 1:
 					login(dis, dos);
@@ -87,10 +90,12 @@ public class HiloServidor extends Thread {
 		// TODO Auto-generated method stub
 		try {
 			int idUsuario = (int) dis.readInt();
+			System.out.println("Id usuario metodo VerReuiones " + idUsuario );
 			ArrayList<Reuniones> reuniones = new Reuniones().getReunionesById(idUsuario);
 			String[][] reunionesModelo = new Reuniones().getModeloReuniones(reuniones);
 			oos.writeObject(reuniones);
 			oos.flush();
+			System.out.println("Tamaño reuniones " + reuniones.size());
 			oos.writeObject(reunionesModelo);
 			oos.flush();
 		} catch (IOException e) {
@@ -101,7 +106,7 @@ public class HiloServidor extends Thread {
 	private void verOtrosHorarios(DataInputStream dis, ObjectOutputStream oos) { // TODO Auto-generated method stub
 		try {
 			int idUsuario = dis.readInt();
-			ArrayList<String> profesores = new Users().getOtrosProfesores(idUsuario);
+			ArrayList<Profesor> profesores = new Users().getOtrosProfesores(idUsuario);
 			oos.writeObject(profesores);
 			oos.flush();
 		} catch (IOException e) {
@@ -128,9 +133,21 @@ public class HiloServidor extends Thread {
 		try {
 			String usuario = dis.readUTF();
 			String password = dis.readUTF();
-			int usuarioComprobado = new Users().Login(usuario, password);
-			dos.writeInt(usuarioComprobado);
-			dos.flush();
+		
+			Users usuarioComprobado = new Users().Login(usuario, password);
+
+			if(usuarioComprobado!= null) {
+				dos.writeInt(usuarioComprobado.getId());
+				dos.flush();
+				dos.writeInt(usuarioComprobado.getTipos().getId());
+				dos.flush();
+			}else {
+				dos.writeInt(0); //Para el supuesto en el que no sea correcto
+				dos.flush();
+				dos.writeInt(0);
+				dos.flush();
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

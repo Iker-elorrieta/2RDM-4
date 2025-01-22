@@ -212,20 +212,19 @@ public class Users implements java.io.Serializable {
 				+ horarioses + "]";
 	}
 
-	public int Login(String usuario, String contrasena) {
-		// TODO Auto-generated method stub
-
+	public Users Login(String usuario, String contrasena) {
+		Users usuarioComprobado = null;
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
-		String hql = "from Users where username = '" + usuario + "' AND password = '" + contrasena
-				+ "' AND tipos.name = 'profesor' ";
+		String hql = "from Users where username = :username and password = :password and (tipos.name = :tipoProfesor or tipos.name = :tipoAlumno)";
 		Query q = session.createQuery(hql);
-		Users usuarioComprobado = (Users) q.uniqueResult();
-		if (usuarioComprobado == null) {
-			return 0;
-		} else {
-			return usuarioComprobado.id;
-		}
+		q.setParameter("username", usuario);
+		q.setParameter("password", contrasena);
+		q.setParameter("tipoProfesor", "profesor");
+		q.setParameter("tipoAlumno", "alumno");
+		usuarioComprobado = (Users) q.uniqueResult();
+		return usuarioComprobado;
+
 	}
 
 	public String[][] getHorarioById(int idUsuario) {
@@ -271,8 +270,9 @@ public class Users implements java.io.Serializable {
 		return dia;
 	}
 
-	public ArrayList<String> getOtrosProfesores(int idUsuario) {
-		ArrayList<String> profesores = new ArrayList<String>();
+	public ArrayList<Profesor> getOtrosProfesores(int idUsuario) {
+		
+		ArrayList<Profesor> profesores = new ArrayList<Profesor>();
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
 		String hql = "from Users where id != " + idUsuario + " AND tipos.name = 'profesor'";
@@ -281,7 +281,7 @@ public class Users implements java.io.Serializable {
 
 		for (int i = 0; i < filas.size(); i++) {
 			Users usuario = (Users) filas.get(i);
-			profesores.add(usuario.getId() + ";" + usuario.getNombre());
+			profesores.add(new Profesor(usuario.getId() , usuario.getNombre()));
 		}
 
 		return profesores;

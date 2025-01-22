@@ -41,6 +41,7 @@ public class Controlador implements ActionListener, MouseListener {
 	private DataInputStream dis;
 	private ObjectInputStream ois;
 	private int id = 0;
+	private int tipo =0;
 	private ArrayList<Profesor> profesores = new ArrayList<Profesor>();
 	private ArrayList<Reuniones> reuniones = new ArrayList<Reuniones>();
 	private ArrayList<Centros> centros = new ArrayList<Centros>();
@@ -301,16 +302,23 @@ public class Controlador implements ActionListener, MouseListener {
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
-			dos.writeUTF(contrasenaCifrada);
+			System.out.println(contrasenaCifrada);
+			//CAMBIAR*********************************************************************************************************************
+			//dos.writeUTF(contrasenaCifrada);
+			dos.writeUTF( new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
+			
 			dos.flush();
 			id = dis.readInt();
-
+			//Leemos el tipo  
+			tipo = dis.readInt();
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		if (id != 0) {
+		if (id != 0 && tipo ==3) {
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_MENU);
 		} else {
 			JOptionPane.showMessageDialog(null, "No existe ningun profesor con esas credenciales");
@@ -404,11 +412,8 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.flush();
 			dos.writeInt(id);
 			dos.flush();
-			@SuppressWarnings("unchecked")
-			ArrayList<String> profesoresLista = (ArrayList<String>) ois.readObject();
-			for (String profesor : profesoresLista) {
-				profesores.add(new Profesor(Integer.parseInt(profesor.split(";")[0]), profesor.split(";")[1]));
-			}
+			profesores = (ArrayList<Profesor>) ois.readObject();
+			
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
 			ArrayList<String> modelo = new ArrayList<String>();
 			for (Profesor profesor : profesores) {
