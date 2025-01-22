@@ -6,12 +6,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -48,6 +52,26 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void inicializarControlador() {
 
+		// EVENTO CERRAR VENTANA
+		this.vistaPrincipal.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				try {
+					dos.writeInt(6);
+					dos.flush();
+					dis.close();
+					ois.close();
+					dos.close();
+					oos.close();
+					cliente.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				e.getWindow().dispose();
+			}
+		});
 		// VENTANA LOGIN
 		this.vistaPrincipal.getPanelLogin().getBtnLogin().addActionListener(this);
 		this.vistaPrincipal.getPanelLogin().getBtnLogin().setActionCommand(Principal.enumAcciones.LOGIN.toString());
@@ -82,6 +106,7 @@ public class Controlador implements ActionListener, MouseListener {
 				.addListSelectionListener(new ListSelectionListener() {
 					@Override
 					public void valueChanged(ListSelectionEvent e) {
+
 						habilitarBotones();
 					}
 				});
@@ -98,15 +123,17 @@ public class Controlador implements ActionListener, MouseListener {
 
 	protected void habilitarBotones() {
 		// TODO Auto-generated method stub
-		if (reuniones.get(this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow()).getEstado()
-				.equalsIgnoreCase("pendiente")
-				|| reuniones.get(this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow()).getEstado()
-						.equalsIgnoreCase("En conflicto")) {
-			this.vistaPrincipal.getPanelTareas().getBtnConfirmar().setEnabled(true);
-			this.vistaPrincipal.getPanelTareas().getBtnRechazar().setEnabled(true);
-		} else {
-			this.vistaPrincipal.getPanelTareas().getBtnConfirmar().setEnabled(false);
-			this.vistaPrincipal.getPanelTareas().getBtnRechazar().setEnabled(false);
+		if (this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow() != -1) {
+			if (reuniones.get(this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow()).getEstado()
+					.equalsIgnoreCase("pendiente")
+					|| reuniones.get(this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow())
+							.getEstado().equalsIgnoreCase("conflicto")) {
+				this.vistaPrincipal.getPanelTareas().getBtnConfirmar().setEnabled(true);
+				this.vistaPrincipal.getPanelTareas().getBtnRechazar().setEnabled(true);
+			} else {
+				this.vistaPrincipal.getPanelTareas().getBtnConfirmar().setEnabled(false);
+				this.vistaPrincipal.getPanelTareas().getBtnRechazar().setEnabled(false);
+			}
 		}
 	}
 
@@ -130,12 +157,13 @@ public class Controlador implements ActionListener, MouseListener {
 			break;
 		case DESCONECTAR:
 			try {
-				dos.writeInt(77);
+				dos.writeInt(6);
 				dos.flush();
 				dis.close();
 				ois.close();
 				dos.close();
 				oos.close();
+				
 				cliente.close();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -157,14 +185,33 @@ public class Controlador implements ActionListener, MouseListener {
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
 			break;
 		case CONFIRMAR_REUNION:
+			cambiarTarea("aceptada");
 			break;
 		case RECHAZAR_REUNION:
+			cambiarTarea("denegada");
 			break;
 
 		default:
 			break;
 
 		}
+	}
+
+	private void cambiarTarea(String estado) {
+		// TODO Auto-generated method stub
+		try {
+			dos.writeInt(5);
+			dos.flush();
+			dos.writeInt(reuniones.get(this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow())
+					.getIdReunion());
+			dos.flush();
+			dos.writeUTF(estado);
+			dos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		;
 	}
 
 	private void cargarPendiendes() {
@@ -236,13 +283,25 @@ public class Controlador implements ActionListener, MouseListener {
 
 	private void mConfirmarLogin(enumAcciones accion) {
 		// TODO Auto-generated method stub
-
+		String contrasenaCifrada = "";
 		try {
 			dos.writeInt(1);
 			dos.flush();
 			dos.writeUTF(this.vistaPrincipal.getPanelLogin().getTextFieldUser().getText());
 			dos.flush();
-			dos.writeUTF(new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
+			try {
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				byte dataBytes[] = new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword())
+						.getBytes();
+				md.update(dataBytes);
+				byte resumen[] = md.digest();
+				contrasenaCifrada = new String(resumen);
+				System.out.println("Resumen: " + contrasenaCifrada);
+
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+			dos.writeUTF(contrasenaCifrada);
 			dos.flush();
 			id = dis.readInt();
 
@@ -339,7 +398,7 @@ public class Controlador implements ActionListener, MouseListener {
 		// TODO Auto-generated method stub
 
 		this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
-
+		profesores.removeAll(profesores);
 		try {
 			dos.writeInt(3);
 			dos.flush();
