@@ -305,7 +305,7 @@ public class Controlador implements ActionListener, MouseListener {
 			System.out.println(contrasenaCifrada);
 			//CAMBIAR*********************************************************************************************************************
 			//dos.writeUTF(contrasenaCifrada);
-			dos.writeUTF( new String(this.vistaPrincipal.getPanelLogin().getTextFieldPass().getPassword()));
+			dos.writeUTF( contrasenaCifrada);
 			
 			dos.flush();
 			id = dis.readInt();
