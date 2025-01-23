@@ -426,7 +426,7 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 
 	}
-
+ 
 	private void cargarLista(ArrayList<String> datos) { // TODO Auto-generated
 		String[] arrayDatos = datos.toArray(new String[0]);
 
