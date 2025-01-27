@@ -307,7 +307,7 @@ public class Controlador implements ActionListener, MouseListener {
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
-			
+
 			// CAMBIAR*********************************************************************************************************************
 			// dos.writeUTF(contrasenaCifrada);
 			dos.writeUTF(contrasenaCifrada);
@@ -356,13 +356,46 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.writeInt(id);
 			dos.flush();
 			reuniones = (ArrayList<Reuniones>) ois.readObject();
-			cargarHorario((String[][]) ois.readObject(), this.vistaPrincipal.getPanelHorario().getTablaHorario());
+			String[][] reunionesModelo = (String[][]) ois.readObject();
+			dos.writeInt(2);
+			dos.flush();
+			dos.writeInt(id);
+			dos.flush();
+			String[][] horario = (String[][]) ois.readObject();
+			String[][] horarioJuntado = juntarHorarios(reunionesModelo, horario);
+			cargarHorario(horarioJuntado, this.vistaPrincipal.getPanelHorario().getTablaHorario());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	private String[][] juntarHorarios(String[][] reunionesModelo, String[][] horario) {
+		// TODO Auto-generated method stub
+		int filas = horario.length;
+		int columnas = horario[0].length;
+
+		String[][] resultado = new String[filas][columnas];
+
+		for (int i = 0; i < filas; i++) {
+			for (int j = 0; j < columnas; j++) {
+				String clase = horario[i][j];
+				String reunion = reunionesModelo[i][j];
+
+				if (!clase.isEmpty() && !reunion.isEmpty()) {
+					resultado[i][j] = clase + " / " + reunion;
+				} else if (!clase.isEmpty()) {
+					resultado[i][j] = clase;
+				} else if (!reunion.isEmpty()) {
+					resultado[i][j] = reunion;
+				} else {
+					resultado[i][j] = "";
+				}
+			}
+		}
+
+		return resultado;
+	}
 
 	@SuppressWarnings("unchecked")
 	private void mAbrirHorarioOtros() {
@@ -422,14 +455,14 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	private void cargarHorario(String[][] horario, JTable tabla) {
-		
+
 		DefaultTableModel modelo = new DefaultTableModel(horario,
 				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" }) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false; 
+				return false;
 			}
 		};
 
@@ -441,13 +474,13 @@ public class Controlador implements ActionListener, MouseListener {
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 					boolean hasFocus, int row, int column) {
-				
+
 				JTextArea textArea = new JTextArea();
 				textArea.setText(value == null ? "" : value.toString());
-				textArea.setWrapStyleWord(true); 
-				textArea.setLineWrap(true); 
-				textArea.setOpaque(true); 
-				
+				textArea.setWrapStyleWord(true);
+				textArea.setLineWrap(true);
+				textArea.setOpaque(true);
+
 				if (value != null && value instanceof String) {
 					String cellValue = (String) value;
 
@@ -478,13 +511,11 @@ public class Controlador implements ActionListener, MouseListener {
 			}
 		};
 
-		
 		for (int i = 1; i < tabla.getColumnCount(); i++) {
 			tabla.getColumnModel().getColumn(i).setCellRenderer(renderizador);
 		}
 
-
-		tabla.setRowHeight(75); 
+		tabla.setRowHeight(75);
 	}
 
 	@Override

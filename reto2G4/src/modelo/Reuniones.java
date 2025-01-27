@@ -2,6 +2,8 @@ package modelo;
 // Generated 13 ene 2025, 12:32:46 by Hibernate Tools 6.5.1.Final
 
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,7 +150,11 @@ public class Reuniones implements java.io.Serializable {
 		ArrayList<Reuniones> reuniones = new ArrayList<Reuniones>();
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
-		String hql = "from Reuniones where usersByProfesorId = " + idUsuario + " ";
+		System.out.println(java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.MONDAY)));
+		System.out.println(java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.SUNDAY)));
+		String hql = "from Reuniones where usersByProfesorId = " + idUsuario + " and fecha between '"
+				+ java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.MONDAY)) + "' and '"
+				+ java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.SUNDAY))+"'";
 		Query q = session.createQuery(hql);
 		List<?> filas = q.list();
 
@@ -161,9 +167,8 @@ public class Reuniones implements java.io.Serializable {
 
 	public String[][] getModeloReuniones(ArrayList<Reuniones> reuniones) {
 		// TODO Auto-generated method stub
-		String[][] planSemanal = { { "1ra", "", "", "", "", "" }, { "2da", "", "", "", "", ""},
-				{ "3ra", "", "", "", "", "" }, { "4ta", "", "", "", "", ""},
-				{ "5ta", "", "", "", "", "" } };
+		String[][] planSemanal = { { "1ra", "", "", "", "", "" }, { "2da", "", "", "", "", "" },
+				{ "3ra", "", "", "", "", "" }, { "4ta", "", "", "", "", "" }, { "5ta", "", "", "", "", "" } };
 
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones reunion = (Reuniones) reuniones.get(i);
@@ -220,5 +225,4 @@ public class Reuniones implements java.io.Serializable {
 		tx.commit();
 	}
 
-	
 }

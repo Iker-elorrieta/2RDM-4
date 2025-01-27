@@ -216,13 +216,27 @@ public class Users implements java.io.Serializable {
 		Users usuarioComprobado = null;
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
-		String hql = "from Users where username = :username and password = :password and (tipos.name = :tipoProfesor or tipos.name = :tipoAlumno)";
+		String hql = "from Users where tipos.name = :tipoProfesor or tipos.name = :tipoAlumno";
 		Query q = session.createQuery(hql);
-		q.setParameter("username", usuario);
-		q.setParameter("password", contrasena);
 		q.setParameter("tipoProfesor", "profesor");
 		q.setParameter("tipoAlumno", "alumno");
-		usuarioComprobado = (Users) q.uniqueResult();
+		List<?> usuarios = q.list();
+		for (int i = 0; i < usuarios.size(); i++) {
+
+			try {
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				byte dataBytes[] = ((Users) usuarios.get(i)).getPassword().getBytes();
+				md.update(dataBytes);
+				byte resumen[] = md.digest();
+				((Users) usuarios.get(i)).setPassword(new String(resumen));
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+			if (((Users) usuarios.get(i)).getUsername().equalsIgnoreCase(usuario)
+					&& ((Users) usuarios.get(i)).getPassword().equalsIgnoreCase(contrasena)) {
+				usuarioComprobado = (Users) usuarios.get(i);
+			}
+		}
 		return usuarioComprobado;
 
 	}
@@ -230,8 +244,7 @@ public class Users implements java.io.Serializable {
 	public String[][] getHorarioById(int idUsuario) {
 		// TODO Auto-generated method stub
 		String[][] planSemanal = { { "1ra", "", "", "", "", "" }, { "2da", "", "", "", "", "" },
-				{ "3ra", "", "", "", "", "" }, { "4ta", "", "", "", "", "" },
-				{ "5ta", "", "", "", "", "" } };
+				{ "3ra", "", "", "", "", "" }, { "4ta", "", "", "", "", "" }, { "5ta", "", "", "", "", "" } };
 
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
@@ -271,7 +284,7 @@ public class Users implements java.io.Serializable {
 	}
 
 	public ArrayList<Profesor> getOtrosProfesores(int idUsuario) {
-		
+
 		ArrayList<Profesor> profesores = new ArrayList<Profesor>();
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
@@ -281,7 +294,7 @@ public class Users implements java.io.Serializable {
 
 		for (int i = 0; i < filas.size(); i++) {
 			Users usuario = (Users) filas.get(i);
-			profesores.add(new Profesor(usuario.getId() , usuario.getNombre()));
+			profesores.add(new Profesor(usuario.getId(), usuario.getNombre()));
 		}
 
 		return profesores;
