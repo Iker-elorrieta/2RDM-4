@@ -62,7 +62,6 @@ public class Centros implements Serializable {
 			}
 
 		} catch (FileNotFoundException e) {
-			System.err.println("Error: archivo no encontrado en la ruta especificada.");
 			e.printStackTrace();
 		}
 		return centros;

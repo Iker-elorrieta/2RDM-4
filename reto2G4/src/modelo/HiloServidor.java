@@ -35,7 +35,6 @@ public class HiloServidor extends Thread {
 			while (!terminar) {
 
 				opcion = dis.readInt();
-				System.out.println("Opcion selecionada: " + opcion);
 				switch (opcion) {
 				case 1:
 					login(dis, dos);
@@ -90,12 +89,10 @@ public class HiloServidor extends Thread {
 		// TODO Auto-generated method stub
 		try {
 			int idUsuario = (int) dis.readInt();
-			System.out.println("Id usuario metodo VerReuiones " + idUsuario );
 			ArrayList<Reuniones> reuniones = new Reuniones().getReunionesById(idUsuario);
 			String[][] reunionesModelo = new Reuniones().getModeloReuniones(reuniones);
 			oos.writeObject(reuniones);
 			oos.flush();
-			System.out.println("Tamaño reuniones " + reuniones.size());
 			oos.writeObject(reunionesModelo);
 			oos.flush();
 		} catch (IOException e) {

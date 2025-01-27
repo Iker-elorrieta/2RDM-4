@@ -19,11 +19,11 @@ public class PanelLista extends JPanel {
 	 */
 	public PanelLista() {
 		setBackground(new Color(255, 255, 255));
-		setBounds(288, 11, 688, 541);
+		setBounds(288, 11, 829, 658);
 		setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(77, 78, 274, 355);
+		scrollPane.setBounds(77, 78, 315, 499);
 		add(scrollPane);
 
 		lista = new JList<String>();
@@ -31,12 +31,12 @@ public class PanelLista extends JPanel {
 
 		btnVolver = new JButton("Volver");
 		btnVolver.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnVolver.setBounds(513, 30, 129, 37);
+		btnVolver.setBounds(675, 50, 129, 37);
 		add(btnVolver);
 
 		btnSeleccionar = new JButton("Seleccionar");
 		btnSeleccionar.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnSeleccionar.setBounds(402, 154, 240, 37);
+		btnSeleccionar.setBounds(477, 153, 240, 60);
 		add(btnSeleccionar);
 	}
 

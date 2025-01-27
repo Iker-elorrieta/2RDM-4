@@ -161,9 +161,9 @@ public class Reuniones implements java.io.Serializable {
 
 	public String[][] getModeloReuniones(ArrayList<Reuniones> reuniones) {
 		// TODO Auto-generated method stub
-		String[][] planSemanal = { { "1ra", "", "", "", "", "", "", "" }, { "2da", "", "", "", "", "", "", "" },
-				{ "3ra", "", "", "", "", "", "", "" }, { "4ta", "", "", "", "", "", "", "" },
-				{ "5ta", "", "", "", "", "", "", "" } };
+		String[][] planSemanal = { { "1ra", "", "", "", "", "" }, { "2da", "", "", "", "", ""},
+				{ "3ra", "", "", "", "", "" }, { "4ta", "", "", "", "", ""},
+				{ "5ta", "", "", "", "", "" } };
 
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones reunion = (Reuniones) reuniones.get(i);

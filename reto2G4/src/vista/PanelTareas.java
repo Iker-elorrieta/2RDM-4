@@ -20,17 +20,17 @@ public class PanelTareas extends JPanel {
 	 */
 	public PanelTareas() {
 		setBackground(new Color(255, 255, 255));
-		setBounds(288, 11, 688, 541);
+		setBounds(288, 11, 829, 658);
 		setLayout(null);
 
 		btnVolver = new JButton("Volver");
 		btnVolver.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnVolver.setBounds(513, 30, 129, 37);
+		btnVolver.setBounds(640, 45, 129, 37);
 		add(btnVolver);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setFont(new Font("Arial", Font.PLAIN, 16));
-		scrollPane.setBounds(64, 129, 565, 253);
+		scrollPane.setBounds(77, 109, 657, 360);
 		add(scrollPane);
 
 		tablaHorario = new JTable();
@@ -43,13 +43,13 @@ public class PanelTareas extends JPanel {
 		btnConfirmar = new JButton("Confirmar");
 		btnConfirmar.setEnabled(false);
 		btnConfirmar.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnConfirmar.setBounds(122, 431, 153, 37);
+		btnConfirmar.setBounds(97, 518, 217, 37);
 		add(btnConfirmar);
 
 		btnRechazar = new JButton("Rechazar");
 		btnRechazar.setEnabled(false);
 		btnRechazar.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnRechazar.setBounds(424, 431, 153, 37);
+		btnRechazar.setBounds(490, 518, 217, 37);
 		add(btnRechazar);
 
 	}

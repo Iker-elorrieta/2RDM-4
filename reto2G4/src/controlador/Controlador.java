@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -41,7 +42,7 @@ public class Controlador implements ActionListener, MouseListener {
 	private DataInputStream dis;
 	private ObjectInputStream ois;
 	private int id = 0;
-	private int tipo =0;
+	private int tipo = 0;
 	private ArrayList<Profesor> profesores = new ArrayList<Profesor>();
 	private ArrayList<Reuniones> reuniones = new ArrayList<Reuniones>();
 	private ArrayList<Centros> centros = new ArrayList<Centros>();
@@ -164,7 +165,7 @@ public class Controlador implements ActionListener, MouseListener {
 				ois.close();
 				dos.close();
 				oos.close();
-				
+
 				cliente.close();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -208,6 +209,11 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.flush();
 			dos.writeUTF(estado);
 			dos.flush();
+			this.vistaPrincipal.getPanelTareas().getTablaHorario().getModel().setValueAt(estado,
+					this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow(), 5);
+			reuniones.get(this.vistaPrincipal.getPanelTareas().getTablaHorario().getSelectedRow()).setEstado(estado);
+			this.vistaPrincipal.getPanelTareas().getBtnConfirmar().setEnabled(false);
+			this.vistaPrincipal.getPanelTareas().getBtnRechazar().setEnabled(false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -297,28 +303,25 @@ public class Controlador implements ActionListener, MouseListener {
 				md.update(dataBytes);
 				byte resumen[] = md.digest();
 				contrasenaCifrada = new String(resumen);
-				System.out.println("Resumen: " + contrasenaCifrada);
 
 			} catch (NoSuchAlgorithmException e) {
 				e.printStackTrace();
 			}
-			System.out.println(contrasenaCifrada);
-			//CAMBIAR*********************************************************************************************************************
-			//dos.writeUTF(contrasenaCifrada);
-			dos.writeUTF( contrasenaCifrada);
 			
+			// CAMBIAR*********************************************************************************************************************
+			// dos.writeUTF(contrasenaCifrada);
+			dos.writeUTF(contrasenaCifrada);
+
 			dos.flush();
 			id = dis.readInt();
-			//Leemos el tipo  
 			tipo = dis.readInt();
-			
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		if (id != 0 && tipo ==3) {
+		if (id != 0 && tipo == 3) {
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_MENU);
 		} else {
 			JOptionPane.showMessageDialog(null, "No existe ningun profesor con esas credenciales");
@@ -354,54 +357,14 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.flush();
 			reuniones = (ArrayList<Reuniones>) ois.readObject();
 			cargarHorario((String[][]) ois.readObject(), this.vistaPrincipal.getPanelHorario().getTablaHorario());
-			cargarColoresTabla(this.vistaPrincipal.getPanelHorario().getTablaHorario());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private void cargarColoresTabla(JTable tabla) {
-		// TODO Auto-generated method sub
 
-		DefaultTableCellRenderer renderizador = new DefaultTableCellRenderer() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
-				Component componente = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-						column);
-
-				componente.setBackground(Color.WHITE);
-				componente.setForeground(Color.BLACK);
-
-				if (((String) value).contains("-R")) {
-					componente.setBackground(Color.RED);
-					componente.setForeground(Color.BLACK);
-				} else if (((String) value).contains("-C")) {
-					componente.setBackground(Color.GREEN);
-					componente.setForeground(Color.BLACK);
-				} else if (((String) value).contains("-P")) {
-					componente.setBackground(Color.GRAY);
-					componente.setForeground(Color.BLACK);
-				} else if (((String) value).contains("-E")) {
-					componente.setBackground(Color.ORANGE);
-					componente.setForeground(Color.BLACK);
-				}
-
-				return componente;
-			}
-		};
-
-		for (int i = 1; i < tabla.getColumnCount(); i++) {
-			tabla.getColumnModel().getColumn(i).setCellRenderer(renderizador);
-		}
-	}
-
+	@SuppressWarnings("unchecked")
 	private void mAbrirHorarioOtros() {
 		// TODO Auto-generated method stub
 
@@ -413,7 +376,7 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.writeInt(id);
 			dos.flush();
 			profesores = (ArrayList<Profesor>) ois.readObject();
-			
+
 			this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_LISTA);
 			ArrayList<String> modelo = new ArrayList<String>();
 			for (Profesor profesor : profesores) {
@@ -426,7 +389,7 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 
 	}
- 
+
 	private void cargarLista(ArrayList<String> datos) { // TODO Auto-generated
 		String[] arrayDatos = datos.toArray(new String[0]);
 
@@ -459,18 +422,69 @@ public class Controlador implements ActionListener, MouseListener {
 	}
 
 	private void cargarHorario(String[][] horario, JTable tabla) {
-
+		
 		DefaultTableModel modelo = new DefaultTableModel(horario,
-				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }) {
+				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" }) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				return false;
+				return false; 
 			}
 		};
 
 		tabla.setModel(modelo);
+
+		DefaultTableCellRenderer renderizador = new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				
+				JTextArea textArea = new JTextArea();
+				textArea.setText(value == null ? "" : value.toString());
+				textArea.setWrapStyleWord(true); 
+				textArea.setLineWrap(true); 
+				textArea.setOpaque(true); 
+				
+				if (value != null && value instanceof String) {
+					String cellValue = (String) value;
+
+					if (cellValue.contains("-R")) {
+						textArea.setBackground(Color.RED);
+						textArea.setForeground(Color.BLACK);
+					} else if (cellValue.contains("-C")) {
+						textArea.setBackground(Color.GREEN);
+						textArea.setForeground(Color.BLACK);
+					} else if (cellValue.contains("-P")) {
+						textArea.setBackground(Color.GRAY);
+						textArea.setForeground(Color.BLACK);
+					} else if (cellValue.contains("-E")) {
+						textArea.setBackground(Color.ORANGE);
+						textArea.setForeground(Color.BLACK);
+					} else {
+						textArea.setBackground(table.getBackground());
+						textArea.setForeground(table.getForeground());
+					}
+				}
+
+				if (isSelected) {
+					textArea.setBackground(table.getSelectionBackground());
+					textArea.setForeground(table.getSelectionForeground());
+				}
+
+				return textArea;
+			}
+		};
+
+		
+		for (int i = 1; i < tabla.getColumnCount(); i++) {
+			tabla.getColumnModel().getColumn(i).setCellRenderer(renderizador);
+		}
+
+
+		tabla.setRowHeight(75); 
 	}
 
 	@Override

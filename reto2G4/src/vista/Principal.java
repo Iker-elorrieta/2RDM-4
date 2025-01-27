@@ -79,7 +79,7 @@ public class Principal extends JFrame {
 	private void mCrearPanelContenedor() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 707, 584);
+		setBounds(288, 11, 840, 700);
 		panelContenedor = new JPanel();
 		panelContenedor.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelContenedor);
@@ -98,7 +98,6 @@ public class Principal extends JFrame {
 	// *** FIN creaci�n de paneles ***
 
 	public void mVisualizarPaneles(enumAcciones panel) {
-
 		panelLogin.setVisible(false);
 		panelMenu.setVisible(false);
 		panelHorario.setVisible(false);

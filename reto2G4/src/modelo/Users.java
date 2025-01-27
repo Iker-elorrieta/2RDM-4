@@ -229,9 +229,9 @@ public class Users implements java.io.Serializable {
 
 	public String[][] getHorarioById(int idUsuario) {
 		// TODO Auto-generated method stub
-		String[][] planSemanal = { { "1ra", "", "", "", "", "", "", "" }, { "2da", "", "", "", "", "", "", "" },
-				{ "3ra", "", "", "", "", "", "", "" }, { "4ta", "", "", "", "", "", "", "" },
-				{ "5ta", "", "", "", "", "", "", "" } };
+		String[][] planSemanal = { { "1ra", "", "", "", "", "" }, { "2da", "", "", "", "", "" },
+				{ "3ra", "", "", "", "", "" }, { "4ta", "", "", "", "", "" },
+				{ "5ta", "", "", "", "", "" } };
 
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
