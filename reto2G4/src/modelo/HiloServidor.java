@@ -15,7 +15,6 @@ public class HiloServidor extends Thread {
 	public HiloServidor(Socket conexionCli) {
 		// TODO Auto-generated constructor stub
 		this.conexionCli = conexionCli;
-	//	new Users().cifrarContrasenas(); //Hacer una vez
 	}
 
 	public void run() {
@@ -55,11 +54,27 @@ public class HiloServidor extends Thread {
 				case 6:
 					terminar = true;
 					break;
+				case 7: 
+					obtenerProfesoresAlumno(dis,oos);
+					break;
+				case 8 : 
+					crearReunion(ois, dos);
+					break;
+
+				case 9:
+					actualizarIdioma(dis,dos);
+					break;
+
+				case 10:
+					datosPerfil(dis, oos);
+					break;
+				case 11:
+					obtnerAlumnosPorProfesor(dis, oos);
+					break;
 				default:
 
 					break;
 				}
-
 			}
 			ois.close();
 			dis.close();
@@ -71,6 +86,96 @@ public class HiloServidor extends Thread {
 		}
 	}
 
+	
+	//Especifico de Andorid 
+
+	private void obtnerAlumnosPorProfesor(DataInputStream dis, ObjectOutputStream oos) {
+		try { 
+			int idUsuario = dis.readInt(); // id del profesor
+			ArrayList<Users> alumnosProfe = new Users().obtenerAlumnosPorProfesor(idUsuario);
+			if(alumnosProfe.isEmpty()) {
+				oos.writeObject(null); // en caso de que no tenga alumnos
+				oos.flush();
+			}{
+				oos.writeObject(alumnosProfe); //Lista de alumnos
+				oos.flush();
+			}
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void datosPerfil(DataInputStream dis, ObjectOutputStream oos) {
+		try {
+			int idUsuario = dis.readInt();
+			int tipo = dis.readInt();
+			System.out.println("Id " + idUsuario);
+			Users u;
+			if(tipo != 3) {
+			 u = new Users().obtenerPerfilA(idUsuario);
+			 System.out.println(" Tipo de u " + tipo);
+
+			}else {
+				u = new Users().obtenerPerfilP(idUsuario);
+
+			}
+			u.toString();
+			oos.writeObject(u);
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	private void actualizarIdioma(DataInputStream dis,DataOutputStream dos) {
+		try {
+			int idUsuario = dis.readInt();
+			String nuevoIdioma = dis.readUTF(); 
+
+			new Users().actualizarIdioma(idUsuario, nuevoIdioma);
+
+			dos.writeUTF("Idioma actualizado con éxito.");
+			dos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private void crearReunion(ObjectInputStream ois, DataOutputStream dos) {
+		try {
+			String texto = new Reuniones().guardarReunionEnBD( (Reuniones) ois.readObject());
+
+			dos.writeUTF(texto);
+			dos.flush();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	private void obtenerProfesoresAlumno(DataInputStream dis, ObjectOutputStream oos) {
+		try {
+			int tipo = dis.readInt();
+
+			//SI NO ES PROFESOR
+			if (tipo == 3) {
+				oos.writeObject(new Users().getProfesores());
+			} else {
+				oos.writeObject(new Users().getAlumnos());
+			}
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+		
+	
+	
+	//Aqui para abajo es compartido
 	private void cambiarEstadoReunion(DataInputStream dis, ObjectOutputStream oos) {
 		// TODO Auto-generated method stub
 		try {

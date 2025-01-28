@@ -225,4 +225,20 @@ public class Reuniones implements java.io.Serializable {
 		tx.commit();
 	}
 
+	
+	//Añade una reunion recibo por parametro el objeto
+	public String guardarReunionEnBD(Reuniones reunion) {
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory(); 
+		Session session = sessionFactory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			session.save(reunion); 
+			tx.commit();
+			return "Añadido con éxito"; 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "No se pudo añadir la reunión"; 
+		}
+	}
 }

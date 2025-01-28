@@ -358,4 +358,169 @@ public class Users implements java.io.Serializable {
 		tx.commit();
 	}
 
+	//Añado esto
+	public ArrayList<Users> getProfesores() {
+
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users where  tipos.name = 'profesor'";
+		Query q = session.createQuery(hql);
+		@SuppressWarnings("unchecked")
+		List<Users> filas =  q.list();
+		return (ArrayList<Users>) filas;
+
+	}
+
+	public ArrayList<Users> getAlumnos() {
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users where  tipos.name = 'alumno'";
+		Query q = session.createQuery(hql);
+		@SuppressWarnings("unchecked")
+		List<Users> filas =  q.list();
+		return (ArrayList<Users>) filas;
+
+	}
+
+	private String idiomaPreferido;  //
+
+	public String getIdiomaPreferido() {
+		return idiomaPreferido;
+	}
+	public void setIdiomaPreferido(String idiomaPreferido) {
+		this.idiomaPreferido = idiomaPreferido;
+	}
+	public void actualizarIdioma(int idUsuario, String nuevoIdioma) {
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		Transaction tx = null;
+
+		try {
+			tx = (Transaction) session.beginTransaction();
+
+			// Obtenemos el usuario de la base de datos
+			Users usuario = session.get(Users.class, idUsuario); 
+
+			if (usuario != null) {
+				// Actualizamos el idioma preferido
+				usuario.setIdiomaPreferido(nuevoIdioma);
+				// Guardamos el usuario actualizado
+				session.save(usuario); 
+			}
+
+			// Completamos la transacción
+			tx.commit();
+			System.out.println("Idiomna preferido" + nuevoIdioma);
+			System.out.println("Idioma actualizado correctamente");
+
+		} catch (Exception e) {
+			if (tx != null) {
+				tx.rollback(); // Si ocurre un error, revertimos los cambios
+			}
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+	}
+
+	private String cicloNombre;
+	private int curso;
+
+	public Users(int id, Tipos tipos, String email, String username, String password, String nombre, String apellidos,
+			String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia,
+			String cicloNombre, int curso) {
+		this.id = id;
+		this.tipos = tipos;
+		this.email = email;
+		this.username = username;
+		this.password = password;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.dni = dni;
+		this.direccion = direccion;
+		this.telefono1 = telefono1;
+		this.telefono2 = telefono2;
+		this.argazkia = argazkia;
+		this.cicloNombre = cicloNombre;
+		this.curso = curso;
+	}
+
+	public String getCicloNombre() {
+		return cicloNombre;
+	}
+
+	public void setCicloNombre(String cicloNombre) {
+		this.cicloNombre = cicloNombre;
+	}
+
+	public int getCurso() {
+		return curso;
+	}
+
+	public void setCurso(int curso) {
+		this.curso = curso;
+	}
+
+	public Users obtenerPerfilA(int idUsuario) {
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users u where u.id = :alumnoId";
+		Query query = session.createQuery(hql);
+		query.setParameter("alumnoId", idUsuario);
+
+		Users clienteExistente = (Users) query.uniqueResult();
+		String nombreCiclo;
+		int curso;
+		if(clienteExistente!=null) {
+			Set<Object> matriculacionesSet = clienteExistente.getMatriculacioneses();
+			for (Object obj : matriculacionesSet) {
+				if (obj instanceof Matriculaciones) {
+					Matriculaciones matriculacion = (Matriculaciones) obj;
+
+					Ciclos ciclo = matriculacion.getCiclos();
+					nombreCiclo = ciclo.getNombre(); 
+					curso = matriculacion.getId().getCurso();
+					clienteExistente.setCicloNombre(nombreCiclo);
+					clienteExistente.setCurso(curso);
+				}
+			}		
+		}	
+		return clienteExistente;
+	}
+	public Users obtenerPerfilP(int idUsuario) {
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users u where u.id = :profesorId";
+		Query query = session.createQuery(hql);
+		query.setParameter("profesorId", idUsuario);
+
+		Users clienteExistente = (Users) query.uniqueResult();
+		return clienteExistente;
+	}
+
+
+
+	public ArrayList<Users> obtenerAlumnosPorProfesor(int idProfesor) {
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		//Pte 
+		String hql = "SELECT DISTINCT u "
+				+ "FROM Matriculaciones m "
+				+ "JOIN Users u ON m.id.alumId = u.id "
+				+ "JOIN Modulos mod ON m.id.cicloId = mod.ciclos.id "
+				+ "JOIN Horarios h ON h.modulos.id = mod.id "
+				+ "WHERE h.id.profeId = :profesorId";
+
+
+
+		Query q = session.createQuery(hql);
+		q.setParameter("profesorId", idProfesor);
+		ArrayList<Users> filas = (ArrayList<Users>) q.list();
+
+		for(Users u: filas) {
+			System.out.println("Usuario " +u.toString());
+		}
+
+		return new ArrayList<>(filas);
+	}
 }
