@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/pantalla"
+    tools:context=".Perfil.Perfil">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="409dp"
+        android:layout_height="729dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnFoto"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="40dp"
+            app:cardElevation="10dp"
+            android:backgroundTint="#A7CDFF">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/foto"
+                    style="@style/iconColor"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_perfil" />
+
+                <TextView
+                    android:id="@+id/textViewNombrePerfil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="25dp"
+                    android:gravity="center"
+                    android:text="@string/perfilUsuario"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewInfoPersonal"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:cardCornerRadius="40dp"
+            android:layout_margin="10dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewInfoPersonal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/informacionPersonalPerfil"
+                    android:textSize="20sp"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/imageViewInfoPersonal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"
+                    style="@style/iconColor"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_info_personal" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:cardCornerRadius="40dp"
+            android:layout_margin="10dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewPrivacidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/perfilPrivacidad"
+                    android:textSize="20sp"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/imageViewPrivacidad"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_margin="10dp"
+                    style="@style/iconColor"
+                    android:contentDescription="@string/todo"
+                    app:srcCompat="@drawable/ic_privacidad" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:cardCornerRadius="40dp"
+            android:layout_margin="10dp"
+            app:cardElevation="10dp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textViewCambioIdioma"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/perfilCambiarIdioma"
+                    android:textSize="20sp"
+                    android:layout_margin="10dp"
+                    android:gravity="center"
+                    android:textStyle="bold"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/btnIngles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:foregroundTint="#03A9F4"
+                        android:text="@string/idiomaEng" />
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/btnEspanol"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/IdiomaEsp" />
+                </FrameLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardviewAtras"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/imageViewAtras"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            style="@style/iconColor"
+            android:contentDescription="@string/todo"
+            app:srcCompat="@drawable/ic_logout"/>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

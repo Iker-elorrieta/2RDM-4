@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:gravity="bottom"
+    android:background="#A2A2A2">
+    
+    <androidx.cardview.widget.CardView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="40dp"
+        app:cardElevation="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/white">
+        
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_perfil"
+            style="@style/iconColor"/>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/textViewUsuarioMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/userHeader"
+        android:layout_marginLeft="20dp"
+        android:textSize="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewEmailMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/headerUserEmail"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="16dp"/>
+
+
+
+
+</LinearLayout>

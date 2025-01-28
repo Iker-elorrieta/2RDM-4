@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">bilera</string>
+    <string name="textViewUsuario">Erabiltzailea:</string>
+    <string name="textViewContraseña">Pasahitza:</string>
+    <string name="editTextUsuarioL">Adibidez: pedro45</string>
+    <string name="editTextContraseñaL">Pasahitza</string>
+    <string name="btnLogin">Hasi saioa</string>
+    <string name="textviewOlvidar"><u>Pasahitza ahaztu duzu?</u></string>
+    <string name="textViewRegistro">Ez daukazu konturik?</string>
+    <string name="textViewCrearAqui"><u>Hemen sortu</u></string>
+    <string name="textViewTituloL">Hasi saioa</string>
+    <string name="textViewSubtituloL">Zure kontuarekin hasi saioa</string>
+    <string name="todo">dena</string>
+    <string name="toast_llena_campos">Mesedez, bete eremu guztiak.</string>
+    <string name="idiomaEng">EUSKERA</string>
+    <string name="IdiomaEsp">GAZTELANIA</string>
+    <string name="perfilCambiarIdioma">Hizkuntza aldatu</string>
+    <string name="infoPersonal">Informazio Pertsonala</string>
+    <string name="informacionPersonalNombre">Izena</string>
+    <string name="informacionPersonalEmail">Emaila</string>
+    <string name="informacionPersonalFecha">Data</string>
+    <string name="informacionPersonalContrasena">Pasahitza</string>
+    <string name="informacionPersonalModificar">Aldatu</string>
+    <string name="perfilUsuario">textView</string>
+    <string name="informacionPersonalPerfil">Informazio pertsonala</string>
+    <string name="perfilPrivacidad">Privacidade</string>
+    <string name="btnHistorial">CAMBIAR STRING</string>
+    <string name="btnWorkOut">CAMBIAR STRING</string>
+    <string name="saludoUsuario">KAIXO</string>
+    <string name="paginaPrincipalInicio">Inicio</string>
+    <string name="userHeader">user</string>
+    <string name="headerUserEmail">user email</string>
+    <string name="my_account">My account</string>
+    <string name="settings">Settings</string>
+    <string name="logout">logout</string>
+    <string name="consultarSusHorarios">Consultar sus horarios</string>
+    <string name="horarioProfesores">Horarios de los profesores.</string>
+    <string name="consutlarReuniones">Consultar reuniones</string>
+    <string name="crearReuniones">Crear reuniones</string>
+    <string name="hora">Hora</string>
+    <string name="lunes">L</string>
+    <string name="martes">M</string>
+    <string name="miercoles">X</string>
+    <string name="jueves">J</string>
+    <string name="sabado">S</string>
+    <string name="domingo">D</string>
+    <string name="viernes">V</string>
+    <string name="atras">Atras</string>
+
+</resources>

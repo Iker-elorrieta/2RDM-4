@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    style="@style/pantalla"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Crear_Reunion">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+        <TextView
+            android:id="@+id/fecha_hora_actual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Fecha y hora actual "
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/alumnoProfesor_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Alumno/Profesor id"
+            android:textSize="18sp" />
+
+
+
+
+        <EditText
+            android:id="@+id/etTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Titulo de la reunion"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etAsunto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="start|top"
+            android:hint="Asunto"
+            android:inputType="textMultiLine"
+            android:minHeight="150dp"
+            android:overScrollMode="always"
+            android:scrollHorizontally="false"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etAula"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Aula"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+
+
+            <TextView
+                android:id="@+id/txtAlumnoOProfesor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alumno o profesor"/>
+
+            <Spinner
+                android:id="@+id/spinnerAlumnoProfesor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Seleccione Alumno/Profesor"
+                android:textSize="18sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            >
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Centro"/>
+
+            <Spinner
+                android:id="@+id/spinnerCentro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Seleccione Alumno/Profesor"
+                android:textSize="18sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/calendario"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calendario"
+                app:icon="@drawable/ic_calendario" />
+
+            <TextView
+                android:id="@+id/fecha"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:hint="00/00/0000"
+                android:textSize="20sp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <TextView
+            android:id="@+id/estado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="estado por defecto pendiente"
+            android:textSize="20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <Button
+                android:id="@+id/btnCancelar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="Cancelar" />
+
+            <Button
+                android:id="@+id/btnAceptar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="Aceptar"
+
+                />
+
+        </LinearLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</ScrollView>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">bileraApp</string>
+    <string name="textViewUsuario">Usuario:</string>
+    <string name="textViewContraseña">Contraseña:</string>
+    <string name="editTextUsuarioL">Ejemplo: pedro45</string>
+    <string name="editTextContraseñaL">Contraseña</string>
+    <string name="btnLogin">Iniciar sesión</string>
+    <string name="textviewOlvidar"><u>¿Olvidaste tu contraseña?</u></string>
+    <string name="textViewRegistro">¿No tienes una cuenta?</string>
+    <string name="textViewCrearAqui"><u>Crear aquí</u></string>
+    <string name="textViewTituloL">Iniciar sesión</string>
+    <string name="textViewSubtituloL">Inicia sesión con tu cuenta</string>
+    <string name="todo">todo</string>
+    <string name="toast_llena_campos">Por favor, llena todos los campos.</string>
+    <string name="idiomaEng">EUSKERA</string>
+    <string name="IdiomaEsp">ESPAÑOL</string>
+    <string name="perfilCambiarIdioma">Cambiar Idioma</string>
+    <string name="infoPersonal">Informacion personal</string>
+    <string name="informacionPersonalNombre">Nombre</string>
+    <string name="informacionPersonalEmail">Email</string>
+    <string name="informacionPersonalFecha">Fecha</string>
+    <string name="informacionPersonalContrasena">Contraseña</string>
+    <string name="informacionPersonalModificar">Modificar</string>
+    <string name="perfilUsuario">textView</string>
+    <string name="informacionPersonalPerfil">Informacion Personal</string>
+    <string name="perfilPrivacidad">Privacidade</string>
+    <string name="btnHistorial">CAMBIAR STRING</string>
+    <string name="btnWorkOut">CAMBIAR STRING</string>
+    <string name="saludoUsuario">Hola</string>
+    <string name="headerUserEmail">user email</string>
+    <string name="paginaPrincipalInicio">CAMBIAR TEXTO</string>
+    <string name="userHeader">user</string>
+    <string name="my_account">My account</string>
+    <string name="settings">Settings</string>
+    <string name="logout">logout</string>
+    <string name="consultarSusHorarios">Consultar sus horarios</string>
+    <string name="horarioProfesores">Horarios de los profesores.</string>
+    <string name="consutlarReuniones">Consultar reuniones</string>
+    <string name="crearReuniones">Crear reuniones</string>
+    <string name="hora">Hora</string>
+    <string name="lunes">L</string>
+    <string name="martes">M</string>
+    <string name="miercoles">X</string>
+    <string name="jueves">J</string>
+    <string name="sabado">S</string>
+    <string name="domingo">D</string>
+    <string name="viernes">V</string>
+    <string name="atras">Atras</string>
+
+</resources>
