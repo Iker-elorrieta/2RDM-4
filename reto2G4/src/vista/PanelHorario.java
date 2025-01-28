@@ -23,20 +23,20 @@ public class PanelHorario extends JPanel {
 	 */
 	public PanelHorario() {
 		setBackground(new Color(255, 255, 255));
-		setBounds(288, 11, 688, 541);
+		setBounds(288, 11, 829, 658);
 		setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setFont(new Font("Arial", Font.PLAIN, 16));
-		scrollPane.setBounds(64, 129, 565, 253);
+		scrollPane.setBounds(24, 115, 784, 460);
 		add(scrollPane);
 
 		tablaHorario = new JTable();
 		tablaHorario.setModel(new DefaultTableModel(
-				new String[][] { { "08:00-09:00", "", "", "", "", "", "", "" },
-						{ "09:00-10:00", "", "", "", "", "", "", "" }, { "10:00-11:00", "", "", "", "", "", "", "" },
-						{ "11:00-12:00", "", "", "", "", "", "", "" }, { "12:00-13:00", "", "", "", "", "", "", "" }, },
-				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" }) {
+				new String[][] { { "08:00-09:00", "", "", "", "", "" },
+						{ "09:00-10:00", "", "", "", "", "" }, { "10:00-11:00", "", "", "", "", "" },
+						{ "11:00-12:00", "", "", "", "", "" }, { "12:00-13:00", "", "", "", "", "",}, },
+				new String[] { "Hora/Día", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes"}) {
 			private static final long serialVersionUID = 1L;
 			boolean[] columnEditables = new boolean[] { false, false, false, false, false, false, false, false };
 
@@ -45,14 +45,14 @@ public class PanelHorario extends JPanel {
 			}
 		});
 		tablaHorario.setFont(new Font("Arial", Font.PLAIN, 11));
-		tablaHorario.setRowHeight(40);
+		tablaHorario.setRowHeight(80);
 
 		
 		scrollPane.setViewportView(tablaHorario);
 
 		btnVolver = new JButton("Volver");
 		btnVolver.setFont(new Font("Arial", Font.PLAIN, 18));
-		btnVolver.setBounds(490, 29, 164, 35);
+		btnVolver.setBounds(613, 40, 164, 35);
 		add(btnVolver);
 
 		lblTitulo = new JLabel("");
@@ -60,10 +60,10 @@ public class PanelHorario extends JPanel {
 		lblTitulo.setBounds(61, 29, 355, 35);
 		add(lblTitulo);
 
-		btnPendientes = new JButton("Ver Tareas Pendientes");
+		btnPendientes = new JButton("Ver Tareas");
 		btnPendientes.setVisible(false);
 		btnPendientes.setFont(new Font("Arial", Font.PLAIN, 16));
-		btnPendientes.setBounds(227, 446, 223, 35);
+		btnPendientes.setBounds(299, 586, 223, 35);
 		add(btnPendientes);
 	}
 

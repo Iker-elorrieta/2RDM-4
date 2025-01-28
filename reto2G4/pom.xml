@@ -6,6 +6,11 @@
 	<artifactId>reto2G4</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
+	<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.6.2</version>
+		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

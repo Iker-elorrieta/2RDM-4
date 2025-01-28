@@ -13,7 +13,8 @@ public class Principal extends JFrame {
 
 	// Acciones
 	public static enum enumAcciones {
-		CARGAR_PANEL_LOGIN, CARGAR_PANEL_MENU, LOGIN, DESCONECTAR, CARGAR_PANEL_HORARIO, CARGAR_PANEL_LISTA,VOLVER,TAREAS_PENDIENTES, CONFIRMAR_REUNION,RECHAZAR_REUNION,SELECCIONAR_PROFESOR
+		CARGAR_PANEL_LOGIN, CARGAR_PANEL_MENU, LOGIN, DESCONECTAR, CARGAR_PANEL_HORARIO, CARGAR_PANEL_LISTA, VOLVER,
+		TAREAS_PENDIENTES, CONFIRMAR_REUNION, RECHAZAR_REUNION, SELECCIONAR_PROFESOR, CARGAR_PANEL_TAREAS
 
 	}
 
@@ -22,6 +23,7 @@ public class Principal extends JFrame {
 	private PanelMenu panelMenu;
 	private PanelHorario panelHorario;
 	private PanelLista panelLista;
+	private PanelTareas panelTareas;
 
 	public Principal() {
 		setResizable(false);
@@ -33,6 +35,16 @@ public class Principal extends JFrame {
 		mCrearPanelMenu();
 		mCrearPanelHorario();
 		mCrearPanelLista();
+		mCrearPanelTareas();
+	}
+
+	private void mCrearPanelTareas() {
+		// TODO Auto-generated method stub
+		panelTareas = new PanelTareas();
+		panelTareas.setLocation(0, 11);
+		panelContenedor.add(panelTareas);
+		panelContenedor.setBounds(panelTareas.getBounds());
+		panelTareas.setVisible(false);
 	}
 
 	private void mCrearPanelLista() {
@@ -67,7 +79,7 @@ public class Principal extends JFrame {
 	private void mCrearPanelContenedor() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 707, 584);
+		setBounds(288, 11, 840, 700);
 		panelContenedor = new JPanel();
 		panelContenedor.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelContenedor);
@@ -86,11 +98,11 @@ public class Principal extends JFrame {
 	// *** FIN creaci�n de paneles ***
 
 	public void mVisualizarPaneles(enumAcciones panel) {
-
 		panelLogin.setVisible(false);
 		panelMenu.setVisible(false);
 		panelHorario.setVisible(false);
 		panelLista.setVisible(false);
+		panelTareas.setVisible(false);
 		switch (panel) {
 		case CARGAR_PANEL_LOGIN:
 			panelLogin.setVisible(true);
@@ -104,6 +116,8 @@ public class Principal extends JFrame {
 		case CARGAR_PANEL_LISTA:
 			panelLista.setVisible(true);
 			break;
+		case CARGAR_PANEL_TAREAS:
+			panelTareas.setVisible(true);
 		default:
 			break;
 
@@ -148,6 +162,14 @@ public class Principal extends JFrame {
 
 	public void setPanelLista(PanelLista panelLista) {
 		this.panelLista = panelLista;
+	}
+
+	public PanelTareas getPanelTareas() {
+		return panelTareas;
+	}
+
+	public void setPanelTareas(PanelTareas panelTareas) {
+		this.panelTareas = panelTareas;
 	}
 
 }
