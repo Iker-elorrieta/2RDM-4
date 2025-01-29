@@ -1,5 +1,5 @@
 package modelo;
-// Generated 13 ene 2025, 12:32:46 by Hibernate Tools 6.5.1.Final
+// Generated 29 ene 2025, 8:10:48 by Hibernate Tools 6.5.1.Final
 
 import java.util.HashSet;
 import java.util.Set;
@@ -87,7 +87,7 @@ public class Modulos implements java.io.Serializable {
 		this.curso = curso;
 	}
 
-	public Set<Object>getHorarioses() {
+	public Set<Object> getHorarioses() {
 		return this.horarioses;
 	}
 

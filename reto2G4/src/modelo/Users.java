@@ -1,10 +1,9 @@
 package modelo;
-// Generated 13 ene 2025, 12:32:46 by Hibernate Tools 6.5.1.Final
+// Generated 29 ene 2025, 8:10:48 by Hibernate Tools 6.5.1.Final
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +34,7 @@ public class Users implements java.io.Serializable {
 	private Integer telefono1;
 	private Integer telefono2;
 	private byte[] argazkia;
+	private String idioma;
 	private Set<Object> matriculacioneses = new HashSet<Object>(0);
 	private Set<Object> reunionesesForProfesorId = new HashSet<Object>(0);
 	private Set<Object> reunionesesForAlumnoId = new HashSet<Object>(0);
@@ -43,13 +43,14 @@ public class Users implements java.io.Serializable {
 	public Users() {
 	}
 
-	public Users(int id, Tipos tipos) {
+	public Users(int id, Tipos tipos, String idioma) {
 		this.id = id;
 		this.tipos = tipos;
+		this.idioma = idioma;
 	}
 
 	public Users(int id, Tipos tipos, String email, String username, String password, String nombre, String apellidos,
-			String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia,
+			String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia, String idioma,
 			Set<Object> matriculacioneses, Set<Object> reunionesesForProfesorId, Set<Object> reunionesesForAlumnoId,
 			Set<Object> horarioses) {
 		this.id = id;
@@ -64,14 +65,11 @@ public class Users implements java.io.Serializable {
 		this.telefono1 = telefono1;
 		this.telefono2 = telefono2;
 		this.argazkia = argazkia;
+		this.idioma = idioma;
 		this.matriculacioneses = matriculacioneses;
 		this.reunionesesForProfesorId = reunionesesForProfesorId;
 		this.reunionesesForAlumnoId = reunionesesForAlumnoId;
 		this.horarioses = horarioses;
-	}
-
-	public Users(int idUsuario) {
-		// TODO Auto-generated constructor stub
 	}
 
 	public int getId() {
@@ -170,6 +168,14 @@ public class Users implements java.io.Serializable {
 		this.argazkia = argazkia;
 	}
 
+	public String getIdioma() {
+		return this.idioma;
+	}
+
+	public void setIdioma(String idioma) {
+		this.idioma = idioma;
+	}
+
 	public Set<Object> getMatriculacioneses() {
 		return this.matriculacioneses;
 	}
@@ -200,16 +206,6 @@ public class Users implements java.io.Serializable {
 
 	public void setHorarioses(Set<Object> horarioses) {
 		this.horarioses = horarioses;
-	}
-
-	@Override
-	public String toString() {
-		return "Users [id=" + id + ", tipos=" + tipos + ", email=" + email + ", username=" + username + ", password="
-				+ password + ", nombre=" + nombre + ", apellidos=" + apellidos + ", dni=" + dni + ", direccion="
-				+ direccion + ", telefono1=" + telefono1 + ", telefono2=" + telefono2 + ", argazkia="
-				+ Arrays.toString(argazkia) + ", matriculacioneses=" + matriculacioneses + ", reunionesesForProfesorId="
-				+ reunionesesForProfesorId + ", reunionesesForAlumnoId=" + reunionesesForAlumnoId + ", horarioses="
-				+ horarioses + "]";
 	}
 
 	public Users Login(String usuario, String contrasena) {
@@ -358,7 +354,7 @@ public class Users implements java.io.Serializable {
 		tx.commit();
 	}
 
-	//Añado esto
+	// Añado esto
 	public ArrayList<Users> getProfesores() {
 
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
@@ -366,7 +362,7 @@ public class Users implements java.io.Serializable {
 		String hql = "from Users where  tipos.name = 'profesor'";
 		Query q = session.createQuery(hql);
 		@SuppressWarnings("unchecked")
-		List<Users> filas =  q.list();
+		List<Users> filas = q.list();
 		return (ArrayList<Users>) filas;
 
 	}
@@ -377,19 +373,11 @@ public class Users implements java.io.Serializable {
 		String hql = "from Users where  tipos.name = 'alumno'";
 		Query q = session.createQuery(hql);
 		@SuppressWarnings("unchecked")
-		List<Users> filas =  q.list();
+		List<Users> filas = q.list();
 		return (ArrayList<Users>) filas;
 
 	}
 
-	private String idiomaPreferido;  //
-
-	public String getIdiomaPreferido() {
-		return idiomaPreferido;
-	}
-	public void setIdiomaPreferido(String idiomaPreferido) {
-		this.idiomaPreferido = idiomaPreferido;
-	}
 	public void actualizarIdioma(int idUsuario, String nuevoIdioma) {
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
@@ -399,13 +387,13 @@ public class Users implements java.io.Serializable {
 			tx = (Transaction) session.beginTransaction();
 
 			// Obtenemos el usuario de la base de datos
-			Users usuario = session.get(Users.class, idUsuario); 
+			Users usuario = session.get(Users.class, idUsuario);
 
 			if (usuario != null) {
 				// Actualizamos el idioma preferido
-				usuario.setIdiomaPreferido(nuevoIdioma);
+				usuario.setIdioma(nuevoIdioma);
 				// Guardamos el usuario actualizado
-				session.save(usuario); 
+				session.save(usuario);
 			}
 
 			// Completamos la transacción
@@ -427,8 +415,8 @@ public class Users implements java.io.Serializable {
 	private int curso;
 
 	public Users(int id, Tipos tipos, String email, String username, String password, String nombre, String apellidos,
-			String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia,
-			String cicloNombre, int curso) {
+			String dni, String direccion, Integer telefono1, Integer telefono2, byte[] argazkia, String cicloNombre,
+			int curso) {
 		this.id = id;
 		this.tipos = tipos;
 		this.email = email;
@@ -471,22 +459,23 @@ public class Users implements java.io.Serializable {
 		Users clienteExistente = (Users) query.uniqueResult();
 		String nombreCiclo;
 		int curso;
-		if(clienteExistente!=null) {
+		if (clienteExistente != null) {
 			Set<Object> matriculacionesSet = clienteExistente.getMatriculacioneses();
 			for (Object obj : matriculacionesSet) {
 				if (obj instanceof Matriculaciones) {
 					Matriculaciones matriculacion = (Matriculaciones) obj;
 
 					Ciclos ciclo = matriculacion.getCiclos();
-					nombreCiclo = ciclo.getNombre(); 
+					nombreCiclo = ciclo.getNombre();
 					curso = matriculacion.getId().getCurso();
 					clienteExistente.setCicloNombre(nombreCiclo);
 					clienteExistente.setCurso(curso);
 				}
-			}		
-		}	
+			}
+		}
 		return clienteExistente;
 	}
+
 	public Users obtenerPerfilP(int idUsuario) {
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
@@ -498,27 +487,21 @@ public class Users implements java.io.Serializable {
 		return clienteExistente;
 	}
 
-
-
 	public ArrayList<Users> obtenerAlumnosPorProfesor(int idProfesor) {
 		SessionFactory sesion = HibernateUtil.getSessionFactory();
 		Session session = sesion.openSession();
-		//Pte 
-		String hql = "SELECT DISTINCT u "
-				+ "FROM Matriculaciones m "
-				+ "JOIN Users u ON m.id.alumId = u.id "
-				+ "JOIN Modulos mod ON m.id.cicloId = mod.ciclos.id "
-				+ "JOIN Horarios h ON h.modulos.id = mod.id "
+		// Pte
+		String hql = "SELECT DISTINCT u " + "FROM Matriculaciones m " + "JOIN Users u ON m.id.alumId = u.id "
+				+ "JOIN Modulos mod ON m.id.cicloId = mod.ciclos.id " + "JOIN Horarios h ON h.modulos.id = mod.id "
 				+ "WHERE h.id.profeId = :profesorId";
-
-
 
 		Query q = session.createQuery(hql);
 		q.setParameter("profesorId", idProfesor);
+		@SuppressWarnings("unchecked")
 		ArrayList<Users> filas = (ArrayList<Users>) q.list();
 
-		for(Users u: filas) {
-			System.out.println("Usuario " +u.toString());
+		for (Users u : filas) {
+			System.out.println("Usuario " + u.toString());
 		}
 
 		return new ArrayList<>(filas);

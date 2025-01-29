@@ -1,5 +1,5 @@
 package modelo;
-// Generated 13 ene 2025, 12:32:46 by Hibernate Tools 6.5.1.Final
+// Generated 29 ene 2025, 8:10:48 by Hibernate Tools 6.5.1.Final
 
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
@@ -38,18 +38,6 @@ public class Reuniones implements java.io.Serializable {
 	public Reuniones(Users usersByProfesorId, Users usersByAlumnoId) {
 		this.usersByProfesorId = usersByProfesorId;
 		this.usersByAlumnoId = usersByAlumnoId;
-	}
-
-	public Reuniones(Integer idReunion, String estado, String idCentro, String titulo, String asunto, String aula,
-			Timestamp fecha) {
-		super();
-		this.idReunion = idReunion;
-		this.estado = estado;
-		this.idCentro = idCentro;
-		this.titulo = titulo;
-		this.asunto = asunto;
-		this.aula = aula;
-		this.fecha = fecha;
 	}
 
 	public Reuniones(Users usersByProfesorId, Users usersByAlumnoId, String estado, String estadoEus, String idCentro,
@@ -154,7 +142,7 @@ public class Reuniones implements java.io.Serializable {
 		System.out.println(java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.SUNDAY)));
 		String hql = "from Reuniones where usersByProfesorId = " + idUsuario + " and fecha between '"
 				+ java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.MONDAY)) + "' and '"
-				+ java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.SUNDAY))+"'";
+				+ java.sql.Date.valueOf(LocalDate.now().with(DayOfWeek.SUNDAY)) + "'";
 		Query q = session.createQuery(hql);
 		List<?> filas = q.list();
 
@@ -225,20 +213,19 @@ public class Reuniones implements java.io.Serializable {
 		tx.commit();
 	}
 
-	
-	//Añade una reunion recibo por parametro el objeto
+	// Añade una reunion recibo por parametro el objeto
 	public String guardarReunionEnBD(Reuniones reunion) {
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory(); 
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
 		Session session = sessionFactory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			session.save(reunion); 
+			session.save(reunion);
 			tx.commit();
-			return "Añadido con éxito"; 
+			return "Añadido con éxito";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "No se pudo añadir la reunión"; 
+			return "No se pudo añadir la reunión";
 		}
 	}
 }
