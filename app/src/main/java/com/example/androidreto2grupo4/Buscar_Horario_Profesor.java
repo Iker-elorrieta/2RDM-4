@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import modelo.Centros;
 import modelo.Profesor;
 
 import java.io.DataInputStream;
@@ -38,6 +39,7 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
 
     private ObjectInputStream ois;
     private ArrayList<Profesor>profesors;
+    ArrayList<Centros> centros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
         inicializarVariables();
         id = getIntent().getIntExtra("idLogin", -1);
         tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
+        centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
 
         // Cargar la lista de profesores
         cargarListaProfesores();
@@ -67,7 +70,11 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
         });
 
         btnVolver.setOnClickListener(view -> {
-            startActivity(new Intent(Buscar_Horario_Profesor.this, PaginaPrincipal.class));
+            Intent i = new Intent(Buscar_Horario_Profesor.this, PaginaPrincipal.class);
+            i.putExtra("idLogin", id);
+            i.putExtra("tipoLogin", tipo);
+            i.putExtra("centros", centros);
+            startActivity(i);
         });
     }
 

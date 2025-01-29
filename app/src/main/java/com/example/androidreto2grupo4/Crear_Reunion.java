@@ -2,6 +2,7 @@ package com.example.androidreto2grupo4;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -83,7 +84,13 @@ public class Crear_Reunion extends AppCompatActivity {
         getFechaHoraActual();
 
         btnAceptar.setOnClickListener(view -> aceptar());
-
+        btnCancelar.setOnClickListener(view -> {
+                Intent i = new Intent(Crear_Reunion.this, PaginaPrincipal.class);
+                i.putExtra("idLogin",id);
+                i.putExtra("tipoLogin", tipoUsuario);
+                i.putExtra("centros", centros);
+                startActivity(i);
+        });
         btnCalendario.setOnClickListener(v -> {
             final Calendar calendario = Calendar.getInstance();
             dia = calendario.get(Calendar.DAY_OF_MONTH);
@@ -244,6 +251,12 @@ public class Crear_Reunion extends AppCompatActivity {
             Reuniones nuevaReunion = new Reuniones(profesorId, alumnoId, estado, estadoEus, String.valueOf(idCentro), titulo, asunto, aula, fechaTimestamp);
 
             enviarReunionAlServidor(nuevaReunion);
+
+                Intent i = new Intent(Crear_Reunion.this, PaginaPrincipal.class);
+                i.putExtra("idLogin", id);
+                i.putExtra("tipoLogin", tipoUsuario);
+                i.putExtra("centros", centros);
+                startActivity(i);
 
         } catch (Exception e) {
             Toast.makeText(this, "Error al procesar la fecha y hora.", Toast.LENGTH_SHORT).show();

@@ -18,8 +18,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import modelo.Centros;
 
 public class Consultar_Horario extends AppCompatActivity {
     private TableLayout tablaHorario;
@@ -31,6 +34,7 @@ public class Consultar_Horario extends AppCompatActivity {
     private DataInputStream dis;
     private ObjectInputStream ois;
     int tipo, usuarioId;
+    ArrayList<Centros> centros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +51,15 @@ public class Consultar_Horario extends AppCompatActivity {
         inicializarVariables();
         usuarioId = getIntent().getIntExtra("idLogin", -1);
         tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
-
+        centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
         // Cargar el horario
         cargarHorario();
         btnVoler.setOnClickListener(view -> {
-            startActivity(new Intent(Consultar_Horario.this, PaginaPrincipal.class));
+            Intent i = new Intent(Consultar_Horario.this, PaginaPrincipal.class);
+            i.putExtra("idLogin", usuarioId);
+            i.putExtra("tipoLogin", tipo);
+            i.putExtra("centros", centros);
+            startActivity(i);
         });
     }
 

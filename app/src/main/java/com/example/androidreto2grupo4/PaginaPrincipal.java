@@ -38,7 +38,8 @@ public class PaginaPrincipal extends AppCompatActivity {
     private Users usuarioLogeado;
     private String nombre;
     ArrayList<Centros> centros;
-    int idLogin,tipo;
+    int idLogin ;
+    int tipo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +48,13 @@ public class PaginaPrincipal extends AppCompatActivity {
         setContentView(R.layout.activity_pagina_principal);
 
         // Recupera los datos del Intent y formatea el nombre
-        idLogin = getIntent().getIntExtra("idLogin", -1); // -1 como valor predeterminado si no se envió el ID
-        tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
-        centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
 
-        usuarioLogeado = (Users) getIntent().getSerializableExtra("usuarioLogeado");
-        nombre = usuarioLogeado.getNombre().toUpperCase().charAt(0) + usuarioLogeado.getNombre().substring(1);
+           idLogin = getIntent().getIntExtra("idLogin", -1); // -1 como valor predeterminado si no se envió el ID
+           tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
+           centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
+
+           usuarioLogeado = (Users) getIntent().getSerializableExtra("usuarioLogeado");
+           nombre = "introducir un nombre";
 
         // Inicialización de vistas
         initializeViews();
@@ -64,7 +66,6 @@ public class PaginaPrincipal extends AppCompatActivity {
             intentPPC.putExtra("idLogin", idLogin);
             intentPPC.putExtra("tipoLogin", tipo);
             intentPPC.putExtra("centros", centros);
-
             startActivity(intentPPC);
 
         });
@@ -74,33 +75,32 @@ public class PaginaPrincipal extends AppCompatActivity {
             Intent intentPPC = new Intent(PaginaPrincipal.this, Buscar_Horario_Profesor.class);
             intentPPC.putExtra("idLogin", idLogin);
             intentPPC.putExtra("tipoLogin", tipo);
-
+            intentPPC.putExtra("centros", centros);
             startActivity(intentPPC);
         });
 
         consultarReuniones.setOnClickListener(view -> {
             Intent intentPPC = new Intent(PaginaPrincipal.this, Consultar_Reunion.class);
             intentPPC.putExtra("idLogin", idLogin);
+            intentPPC.putExtra("tipoLogin", tipo);
+            intentPPC.putExtra("centros", centros);
             startActivity(intentPPC);
         });
 
         btnCrearReunion.setOnClickListener(view -> {
             Intent intentPPC = new Intent(PaginaPrincipal.this, Crear_Reunion.class);
-
             intentPPC.putExtra("idLogin", idLogin);
             intentPPC.putExtra("centros", centros);
             intentPPC.putExtra("tipoLogin", tipo);
-
             startActivity(intentPPC);
-
-
         });
 
         alumnosProfe.setOnClickListener(view -> {
             Intent intentPPC = new Intent(PaginaPrincipal.this, DatosEstudiantes.class);
             intentPPC.putExtra("idLogin", idLogin);
+            intentPPC.putExtra("tipoLogin", tipo);
+            intentPPC.putExtra("centros", centros);
             startActivity(intentPPC);
-
         });
 
     }
