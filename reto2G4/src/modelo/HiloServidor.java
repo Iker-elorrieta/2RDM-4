@@ -29,7 +29,7 @@ public class HiloServidor extends Thread {
 			ObjectInputStream ois = new ObjectInputStream(conexionCli.getInputStream());
 
 			oos.writeObject(new Centros().obtenerCentros());
-			
+
 			oos.flush();
 			while (!terminar) {
 
@@ -54,15 +54,15 @@ public class HiloServidor extends Thread {
 				case 6:
 					terminar = true;
 					break;
-				case 7: 
-					obtenerProfesoresAlumno(dis,oos);
+				case 7:
+					obtenerProfesoresAlumno(dis, oos);
 					break;
-				case 8 : 
+				case 8:
 					crearReunion(ois, dos);
 					break;
 
 				case 9:
-					actualizarIdioma(dis,dos);
+					actualizarIdioma(dis, dos);
 					break;
 
 				case 10:
@@ -70,6 +70,13 @@ public class HiloServidor extends Thread {
 					break;
 				case 11:
 					obtnerAlumnosPorProfesor(dis, oos);
+					break;
+				case 12:
+					break;
+				case 13:
+					loginAndroid(dis, dos);
+					break;
+				case 14:
 					break;
 				default:
 
@@ -86,22 +93,47 @@ public class HiloServidor extends Thread {
 		}
 	}
 
-	
-	//Especifico de Andorid 
+	private void loginAndroid(DataInputStream dis, DataOutputStream dos) {
+		// TODO Auto-generated method stub
+		try {
+			String usuario = dis.readUTF();
+			String password = dis.readUTF();
+
+			Users usuarioComprobado = new Users().LoginA(usuario, password);
+
+			if (usuarioComprobado != null) {
+				dos.writeInt(usuarioComprobado.getId());
+				dos.flush();
+				dos.writeInt(usuarioComprobado.getTipos().getId());
+				dos.flush();
+			} else {
+				dos.writeInt(0); 
+				dos.flush();
+				dos.writeInt(0);
+				dos.flush();
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	// Especifico de Andorid
 
 	private void obtnerAlumnosPorProfesor(DataInputStream dis, ObjectOutputStream oos) {
-		try { 
+		try {
 			int idUsuario = dis.readInt(); // id del profesor
 			ArrayList<Users> alumnosProfe = new Users().obtenerAlumnosPorProfesor(idUsuario);
-			if(alumnosProfe.isEmpty()) {
+			if (alumnosProfe.isEmpty()) {
 				oos.writeObject(null); // en caso de que no tenga alumnos
 				oos.flush();
-			}{
-				oos.writeObject(alumnosProfe); //Lista de alumnos
+			}
+			{
+				oos.writeObject(alumnosProfe); // Lista de alumnos
 				oos.flush();
 			}
-			
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -113,11 +145,11 @@ public class HiloServidor extends Thread {
 			int tipo = dis.readInt();
 			System.out.println("Id " + idUsuario);
 			Users u;
-			if(tipo != 3) {
-			 u = new Users().obtenerPerfilA(idUsuario);
-			 System.out.println(" Tipo de u " + tipo);
+			if (tipo != 3) {
+				u = new Users().obtenerPerfilA(idUsuario);
+				System.out.println(" Tipo de u " + tipo);
 
-			}else {
+			} else {
 				u = new Users().obtenerPerfilP(idUsuario);
 
 			}
@@ -129,11 +161,10 @@ public class HiloServidor extends Thread {
 		}
 	}
 
-
-	private void actualizarIdioma(DataInputStream dis,DataOutputStream dos) {
+	private void actualizarIdioma(DataInputStream dis, DataOutputStream dos) {
 		try {
 			int idUsuario = dis.readInt();
-			String nuevoIdioma = dis.readUTF(); 
+			String nuevoIdioma = dis.readUTF();
 
 			new Users().actualizarIdioma(idUsuario, nuevoIdioma);
 
@@ -143,9 +174,10 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		}
 	}
+
 	private void crearReunion(ObjectInputStream ois, DataOutputStream dos) {
 		try {
-			String texto = new Reuniones().guardarReunionEnBD( (Reuniones) ois.readObject());
+			String texto = new Reuniones().guardarReunionEnBD((Reuniones) ois.readObject());
 
 			dos.writeUTF(texto);
 			dos.flush();
@@ -161,7 +193,7 @@ public class HiloServidor extends Thread {
 		try {
 			int tipo = dis.readInt();
 
-			//SI NO ES PROFESOR
+			// SI NO ES PROFESOR
 			if (tipo == 3) {
 				oos.writeObject(new Users().getProfesores());
 			} else {
@@ -172,10 +204,8 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		}
 	}
-		
-	
-	
-	//Aqui para abajo es compartido
+
+	// Aqui para abajo es compartido
 	private void cambiarEstadoReunion(DataInputStream dis, ObjectOutputStream oos) {
 		// TODO Auto-generated method stub
 		try {
@@ -235,16 +265,16 @@ public class HiloServidor extends Thread {
 		try {
 			String usuario = dis.readUTF();
 			String password = dis.readUTF();
-		
+
 			Users usuarioComprobado = new Users().Login(usuario, password);
 
-			if(usuarioComprobado!= null) {
+			if (usuarioComprobado != null) {
 				dos.writeInt(usuarioComprobado.getId());
 				dos.flush();
 				dos.writeInt(usuarioComprobado.getTipos().getId());
 				dos.flush();
-			}else {
-				dos.writeInt(0); //Para el supuesto en el que no sea correcto
+			} else {
+				dos.writeInt(0); // Para el supuesto en el que no sea correcto
 				dos.flush();
 				dos.writeInt(0);
 				dos.flush();

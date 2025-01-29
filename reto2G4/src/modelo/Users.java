@@ -506,4 +506,95 @@ public class Users implements java.io.Serializable {
 
 		return new ArrayList<>(filas);
 	}
+
+	public String[][] getHorarioAlumno(int idUsuario) {
+		// Crear el array del horario semanal (5 días x 6 horas)
+		String[][] planSemanal = { { "1ra", "", "", "", "", "", "" }, { "2da", "", "", "", "", "", "" },
+				{ "3ra", "", "", "", "", "", "" }, { "4ta", "", "", "", "", "", "" },
+				{ "5ta", "", "", "", "", "", "" } };
+
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		try {
+			// Consulta para obtener el horario
+			// Añadir curso
+			String hql = """
+					select h.id.dia, h.id.hora, h.modulos.nombre, h.id.
+					from Horarios h
+					where h.modulos.ciclos.id = (
+					    select m.ciclos.id
+					    from Matriculaciones m
+					    where m.users.id = :idUsuario
+					)
+					and h.modulos.curso = (
+					    select mat.id.curso
+					    from Matriculaciones mat
+					    where mat.users.id = :idUsuario
+					)
+					order by h.id.dia, h.id.hora
+					                """;
+			Query query = session.createQuery(hql);
+			query.setParameter("idUsuario", idUsuario);
+			List<Object[]> filas = query.list();
+			for (Object[] fila : filas) {
+				String dia = (String) fila[0]; // Día
+				String hora = (String) fila[1]; // Hora
+				String modulo = (String) fila[2]; // Nombre modulo
+				int diaIndex = convertirDia(dia);
+				int horaIndex = Integer.parseInt(hora) - 1;
+				planSemanal[horaIndex][diaIndex] = modulo;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		return planSemanal;
+	}
+
+	private int convertirDia(String dia) {
+		return switch (dia) {
+		case "L/A" -> 1;
+		case "M/A" -> 2;
+		case "X" -> 3;
+		case "J/O" -> 4;
+		case "V/O" -> 5;
+		default -> 0; // Manejo de errores
+
+		};
+	}
+
+	public Users LoginA(String usuario, String contrasena) {
+		Users usuarioComprobado = null;
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users where username = :username and password = :password and (tipos.name = :tipoProfesor or tipos.name = :tipoAlumno)";
+		Query q = session.createQuery(hql);
+		q.setParameter("username", usuario);
+		q.setParameter("password", contrasena);
+		q.setParameter("tipoProfesor", "profesor");
+		q.setParameter("tipoAlumno", "alumno");
+		usuarioComprobado = (Users) q.uniqueResult();
+		return usuarioComprobado;
+
+	}
+
+	public ArrayList<Profesor> getTodosProfesores() {
+
+		ArrayList<Profesor> profesores = new ArrayList<Profesor>();
+		SessionFactory sesion = HibernateUtil.getSessionFactory();
+		Session session = sesion.openSession();
+		String hql = "from Users where tipos.name = 'profesor'";
+		Query q = session.createQuery(hql);
+		List<?> filas = q.list();
+
+		for (int i = 0; i < filas.size(); i++) {
+			Users usuario = (Users) filas.get(i);
+			profesores.add(new Profesor(usuario.getId(), usuario.getNombre()));
+		}
+
+		return profesores;
+	}
+
 }
