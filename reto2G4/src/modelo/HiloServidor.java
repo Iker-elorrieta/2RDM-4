@@ -72,6 +72,7 @@ public class HiloServidor extends Thread {
 					obtnerAlumnosPorProfesor(dis, oos);
 					break;
 				case 12:
+					consultarHorarioAlumno(dis,oos);
 					break;
 				case 13:
 					loginAndroid(dis, dos);
@@ -91,6 +92,19 @@ public class HiloServidor extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void consultarHorarioAlumno(DataInputStream dis, ObjectOutputStream oos) {
+		// TODO Auto-generated method stub        
+ 		try {
+			int idUsuario = dis.readInt();
+			String[][] horario = new Users().getHorarioAlumno(idUsuario);
+			oos.writeObject(horario);
+			oos.flush();
+		} catch (IOException e) { // TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         
 	}
 
 	private void loginAndroid(DataInputStream dis, DataOutputStream dos) {
