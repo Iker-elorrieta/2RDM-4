@@ -105,23 +105,7 @@
                         android:text="@string/viernes"
                         android:textColor="@android:color/white" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/darker_gray"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:text="@string/sabado"
-                        android:textColor="@android:color/white" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/darker_gray"
-                        android:gravity="center"
-                        android:padding="8dp"
-                        android:text="@string/domingo"
-                        android:textColor="@android:color/white" />
                 </TableRow>
             </TableLayout>
 

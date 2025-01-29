@@ -97,51 +97,19 @@ int id,tipoUsuario;
     }
 
 
-    private void abrirCamara() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create a file to save the photo
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        private void abrirCamara() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 1);
 
-            if (photoFile != null) {
-                // Get URI for the photo file
-                photoURI = FileProvider.getUriForFile(this,
-                        "com.example.androidreto2grupo4.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
-        }
     }
-    private File createImageFile() throws IOException {
-        // Create a unique file name for the image
-        String imageFileName = "JPEG_" + System.currentTimeMillis() + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+        Bundle extras = data.getExtras();
+        assert extras != null;
+        Bitmap imgBitmap = (Bitmap) extras.get("data");
+        imagen.setImageBitmap(imgBitmap);
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            // Get the image from the URI (full-size)
-            Bitmap imageBitmap = BitmapFactory.decodeFile(currentPhotoPath);
-            imagen.setImageBitmap(imageBitmap);
-        }
     }
-
 
     private void cargarInfo() {
         nombre = findViewById(R.id.textViewNombrePerfil);

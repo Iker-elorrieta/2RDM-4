@@ -73,6 +73,8 @@ public class PaginaPrincipal extends AppCompatActivity {
         btnOtrosHorarios.setOnClickListener(view -> {
             Intent intentPPC = new Intent(PaginaPrincipal.this, Buscar_Horario_Profesor.class);
             intentPPC.putExtra("idLogin", idLogin);
+            intentPPC.putExtra("tipoLogin", tipo);
+
             startActivity(intentPPC);
         });
 

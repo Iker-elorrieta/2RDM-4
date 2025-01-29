@@ -33,10 +33,9 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
     private Map<String, String> abreviaturas = new HashMap<>();
     private Button btnVolver, btnAceptar;
     private Spinner listaProfesores;
-    int id;
+    int id,tipo;
     private DataOutputStream dos;
-    private ObjectOutputStream oos;
-    private DataInputStream dis;
+
     private ObjectInputStream ois;
     private ArrayList<Profesor>profesors;
 
@@ -44,11 +43,7 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         try {
             dos = ServerConection.getInstance().getDataOutputStream();
-            dis = ServerConection.getInstance().getDataInputStream();
-
             ois = ServerConection.getInstance().getObjectInputStream();
-
-            oos = ServerConection.getInstance().getObjectOutputStream();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -56,6 +51,7 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
         setContentView(R.layout.activity_buscar_horario_profesor);
         inicializarVariables();
         id = getIntent().getIntExtra("idLogin", -1);
+        tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
 
         // Cargar la lista de profesores
         cargarListaProfesores();
@@ -88,9 +84,6 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
             try {
                 ServerConection serverConnection = ServerConection.getInstance();
 
-
-
-
                 dos.writeInt(2); // Opción para "ver horario"
                 dos.writeInt(IDProfesorBuscar); // Enviar ID del profesor
                 dos.flush();
@@ -111,15 +104,17 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
                 ServerConection serverConnection = ServerConection.getInstance();
 
                 Log.d("CargaProfesores", "Enviando solicitud para cargar profesores...");
-                dos.writeInt(3); // Opción para "ver otros horarios"
-                dos.flush();
-                dos.flush();
 
-                dos.writeInt(id); // Enviar ID del usuario actual
-                dos.flush();
 
-                Log.d("CargaProfesores", "Esperando respuesta del servidor...");
-                profesors = (ArrayList<Profesor>) ois.readObject(); // Recibimos la lista de profesores como ArrayList<Profesor>
+                    dos.writeInt(3); // Opción para "ver otros horarios"
+                    dos.flush();
+                    dos.flush();
+
+                    dos.writeInt((tipo==3)?id:0); // Enviar ID del usuario actual si no es profesor enviamos un 0
+                    dos.flush();
+
+                    Log.d("CargaProfesores", "Esperando respuesta del servidor...");
+                    profesors = (ArrayList<Profesor>) ois.readObject(); // Recibimos la lista de profesores como ArrayList<Profesor>
 
                 Log.d("CargaProfesores", "Lista de profesores recibida, tamaño: " + profesors.size());
                 runOnUiThread(() -> llenarSpinnerProfesores(profesors)); // Llamamos al método de llenar el spinner

@@ -1,117 +1,117 @@
 package com.example.androidreto2grupo4;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.androidreto2grupo4.UserAdapter;
-import com.example.androidreto2grupo4.R;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
+import modelo.Ciclos;
 import modelo.Users;
+
 public class DatosEstudiantes extends AppCompatActivity {
 
     private DataOutputStream dos;
-    private ObjectOutputStream oos;
-    private DataInputStream dis;
     private ObjectInputStream ois;
     private int id;
     private ArrayList<Users> listaUsers = new ArrayList<>();
     private UserAdapter adapter;
+    private ArrayList<Ciclos> listaCiclos = new ArrayList<>();
+    private ArrayList<String> listaCursos = new ArrayList<>();
+    private ArrayAdapter<String> adapterCiclos, adapterCursos;
+    private Spinner spinnerCiclo, spinnerCurso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_datos_estudiantes);
 
-        EdgeToEdge.enable(this);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        // Inicialización de componentes
+        spinnerCiclo = findViewById(R.id.spinnerCiclo);
+        spinnerCurso = findViewById(R.id.spinnerCurso);
+        Button btnAtras = findViewById(R.id.btnAtras);
+        RecyclerView recyclerViewEstudiantes = findViewById(R.id.recyclerViewEstudiantes);
+
+        // Set up RecyclerView
+        recyclerViewEstudiantes.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new UserAdapter(this, listaUsers);  // Inicializamos el adaptador
+        recyclerViewEstudiantes.setAdapter(adapter); // Configuramos el adapter en el RecyclerView
 
         id = getIntent().getIntExtra("idLogin", -1);
 
-        Button btnAtras = findViewById(R.id.btnAtras);
-        RecyclerView recyclerViewEstudiantes = findViewById(R.id.recyclerViewEstudiantes);
-        recyclerViewEstudiantes.setLayoutManager(new LinearLayoutManager(this));
-
-
-
+        // Acción del botón Atras
         btnAtras.setOnClickListener(view -> {
             Intent menuProfesor = new Intent(DatosEstudiantes.this, PaginaPrincipal.class);
             startActivity(menuProfesor);
         });
 
-        new Thread(() -> {
-            try {
-                dos = ServerConection.getInstance().getDataOutputStream();
-                dis = ServerConection.getInstance().getDataInputStream();
-                ois = ServerConection.getInstance().getObjectInputStream();
-                oos = ServerConection.getInstance().getObjectOutputStream();
-
-                // Load users after the connection is established
-                cargarUsuarios();
-
-                adapter = new UserAdapter(this, listaUsers);
-                recyclerViewEstudiantes.setAdapter(adapter);
-
-            } catch (IOException e) {
-                Log.e("ErrorStreams", "Error initializing streams: " + e.getMessage());
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error connecting to server", Toast.LENGTH_LONG).show();
-                    finish(); // Exit activity if connection fails
-                });
-            }
-        }).start();
+        // Carga de datos
+        cargarDatos();
     }
 
-
-
-
-    private void cargarUsuarios() {
+    private void cargarDatos() {
         new Thread(() -> {
             try {
-                // Enviar el comando y el ID al servidor
+                // Inicializamos los flujos de entrada y salida
+                dos = ServerConection.getInstance().getDataOutputStream();
+                ois = ServerConection.getInstance().getObjectInputStream();
+
+                // Solicitar lista de usuarios
                 dos.writeInt(11); // Comando para obtener usuarios
                 dos.flush();
 
-                dos.writeInt(id); // ID del usuario logueado
+                dos.writeInt(id); // Enviamos el ID del usuario logueado
                 dos.flush();
 
-                // Leer la lista de usuarios enviada por el servidor
+                // Recibimos la lista de usuarios
                 listaUsers = (ArrayList<Users>) ois.readObject();
-                Log.d("Tamano", "Número de alumnos: " + listaUsers.size());
+                Log.d("UsuariosRecibidos", "Número de usuarios recibidos: " + listaUsers.size());
 
+                // Solicitar lista de ciclos
+                dos.writeInt(14); // Comando para obtener ciclos
+                dos.flush();
+
+                listaCiclos = (ArrayList<Ciclos>) ois.readObject();
+                Log.d("CiclosRecibidos", "Número de ciclos recibidos: " + listaCiclos.size());
+
+                ArrayList<String> nombresCiclos = new ArrayList<>();
+                for (Ciclos ciclo : listaCiclos) {
+                    nombresCiclos.add(ciclo.getNombre());
+                }
+
+                listaCursos = new ArrayList<>();
+                listaCursos.add("1");
+                listaCursos.add("2");
+
+                // Actualizamos la UI en el hilo principal
                 runOnUiThread(() -> {
+                    // Actualizamos el adaptador del RecyclerView
                     adapter.setUsers(listaUsers);
                     adapter.notifyDataSetChanged();
+
+                    // Configuramos los spinners
+                    adapterCiclos = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, nombresCiclos);
+                    adapterCiclos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerCiclo.setAdapter(adapterCiclos);
+
+                    adapterCursos = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listaCursos);
+                    adapterCursos.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spinnerCurso.setAdapter(adapterCursos);
                 });
+
             } catch (IOException | ClassNotFoundException e) {
-                Log.e("ErrorCargaUsuarios", "Error al cargar usuarios: " + e.getMessage());
-                runOnUiThread(() -> {
-                    Toast.makeText(this, "Error al cargar usuarios: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                Log.e("ErrorAlcargarDatos", "Error al cargar datos: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(this, "Error al cargar datos", Toast.LENGTH_SHORT).show());
             }
         }).start();
     }

@@ -234,7 +234,7 @@ public class Crear_Reunion extends AppCompatActivity {
         }
 
         // Fecha seleccionada a formato Timestamp
-        SimpleDateFormat sdfWithTime = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+        SimpleDateFormat sdfWithTime = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault());
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(sdfWithTime.parse(selectedDate + " 00:00")); // Usar la fecha seleccionada, y ajustarla a las 00:00 de ese día
