@@ -355,47 +355,20 @@ public class Controlador implements ActionListener, MouseListener {
 			dos.flush();
 			dos.writeInt(id);
 			dos.flush();
-			reuniones = (ArrayList<Reuniones>) ois.readObject();
-			String[][] reunionesModelo = (String[][]) ois.readObject();
-			dos.writeInt(2);
+
+			String[][] horario = (String[][]) ois.readObject();
+			dos.writeInt(15);//obtener reuniones
 			dos.flush();
 			dos.writeInt(id);
 			dos.flush();
-			String[][] horario = (String[][]) ois.readObject();
-			String[][] horarioJuntado = juntarHorarios(reunionesModelo, horario);
-			cargarHorario(horarioJuntado, this.vistaPrincipal.getPanelHorario().getTablaHorario());
+			reuniones = (ArrayList<Reuniones>) ois.readObject();
+			cargarHorario(horario, this.vistaPrincipal.getPanelHorario().getTablaHorario());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private String[][] juntarHorarios(String[][] reunionesModelo, String[][] horario) {
-		// TODO Auto-generated method stub
-		int filas = horario.length;
-		int columnas = horario[0].length;
-
-		String[][] resultado = new String[filas][columnas];
-
-		for (int i = 0; i < filas; i++) {
-			for (int j = 0; j < columnas; j++) {
-				String clase = horario[i][j];
-				String reunion = reunionesModelo[i][j];
-
-				if (!clase.isEmpty() && !reunion.isEmpty()) {
-					resultado[i][j] = clase + " / " + reunion;
-				} else if (!clase.isEmpty()) {
-					resultado[i][j] = clase;
-				} else if (!reunion.isEmpty()) {
-					resultado[i][j] = reunion;
-				} else {
-					resultado[i][j] = "";
-				}
-			}
-		}
-
-		return resultado;
-	}
 
 	@SuppressWarnings("unchecked")
 	private void mAbrirHorarioOtros() {

@@ -78,7 +78,13 @@ public class HiloServidor extends Thread {
 					loginAndroid(dis, dos);
 					break;
 				case 14:
+					obtenerCiclos(dis,oos);
 					break;
+				case 15:
+					getReunionesbyID(dis,oos);
+					break;
+
+
 				default:
 
 					break;
@@ -94,67 +100,73 @@ public class HiloServidor extends Thread {
 		}
 	}
 
-	private void consultarHorarioAlumno(DataInputStream dis, ObjectOutputStream oos) {
-		// TODO Auto-generated method stub        
- 		try {
-			int idUsuario = dis.readInt();
-			String[][] horario = new Users().getHorarioAlumno(idUsuario);
-			oos.writeObject(horario);
-			oos.flush();
-		} catch (IOException e) { // TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-         
+	private void getReunionesbyID(DataInputStream dis, ObjectOutputStream oos) throws IOException {
+		int idUsuario = (int) dis.readInt();
+		ArrayList<Reuniones> reuniones = new Reuniones().getReunionesById(idUsuario);
+		oos.writeObject(reuniones);
+		oos.flush();
 	}
 
-	private void loginAndroid(DataInputStream dis, DataOutputStream dos) {
+	private void obtenerCiclos(DataInputStream dis, ObjectOutputStream oos) throws IOException {
+		// TODO Auto-generated method stub        
+		ArrayList<Ciclos> horario = new Ciclos().getCiclos();
+		oos.writeObject(horario);
+		oos.flush();
+
+	}
+
+	private void consultarHorarioAlumno(DataInputStream dis, ObjectOutputStream oos) throws IOException {
+		// TODO Auto-generated method stub        
+
+		int idUsuario = dis.readInt();
+		String[][] horario = new Users().getHorarioAlumno(idUsuario);
+		oos.writeObject(horario);
+		oos.flush();
+
+
+	}
+
+	private void loginAndroid(DataInputStream dis, DataOutputStream dos) throws IOException {
 		// TODO Auto-generated method stub
-		try {
-			String usuario = dis.readUTF();
-			String password = dis.readUTF();
 
-			Users usuarioComprobado = new Users().LoginA(usuario, password);
+		String usuario = dis.readUTF();
+		String password = dis.readUTF();
 
-			if (usuarioComprobado != null) {
-				dos.writeInt(usuarioComprobado.getId());
-				dos.flush();
-				dos.writeInt(usuarioComprobado.getTipos().getId());
-				dos.flush();
-			} else {
-				dos.writeInt(0); 
-				dos.flush();
-				dos.writeInt(0);
-				dos.flush();
-			}
+		Users usuarioComprobado = new Users().LoginA(usuario, password);
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (usuarioComprobado != null) {
+			dos.writeInt(usuarioComprobado.getId());
+			dos.flush();
+			dos.writeInt(usuarioComprobado.getTipos().getId());
+			dos.flush();
+		} else {
+			dos.writeInt(0); 
+			dos.flush();
+			dos.writeInt(0);
+			dos.flush();
 		}
+
+
 	}
 
 	// Especifico de Andorid
 
-	private void obtnerAlumnosPorProfesor(DataInputStream dis, ObjectOutputStream oos) {
-		try {
-			int idUsuario = dis.readInt(); // id del profesor
-			ArrayList<Users> alumnosProfe = new Users().obtenerAlumnosPorProfesor(idUsuario);
-			if (alumnosProfe.isEmpty()) {
-				oos.writeObject(null); // en caso de que no tenga alumnos
-				oos.flush();
-			}
-			{
-				oos.writeObject(alumnosProfe); // Lista de alumnos
-				oos.flush();
-			}
+	private void obtnerAlumnosPorProfesor(DataInputStream dis, ObjectOutputStream oos) throws IOException {
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		int idUsuario = dis.readInt(); // id del profesor
+		ArrayList<Users> alumnosProfe = new Users().obtenerAlumnosPorProfesor(idUsuario);
+		if (alumnosProfe.isEmpty()) {
+			oos.writeObject(null); // en caso de que no tenga alumnos
+			oos.flush();
 		}
+		{
+			oos.writeObject(alumnosProfe); // Lista de alumnos
+			oos.flush();
+		}
+
 	}
 
-	private void datosPerfil(DataInputStream dis, ObjectOutputStream oos) {
-		try {
+	private void datosPerfil(DataInputStream dis, ObjectOutputStream oos) throws IOException {
 			int idUsuario = dis.readInt();
 			int tipo = dis.readInt();
 			System.out.println("Id " + idUsuario);
@@ -170,13 +182,11 @@ public class HiloServidor extends Thread {
 			u.toString();
 			oos.writeObject(u);
 			oos.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
 	}
 
-	private void actualizarIdioma(DataInputStream dis, DataOutputStream dos) {
-		try {
+	private void actualizarIdioma(DataInputStream dis, DataOutputStream dos) throws IOException {
+		
 			int idUsuario = dis.readInt();
 			String nuevoIdioma = dis.readUTF();
 
@@ -184,9 +194,7 @@ public class HiloServidor extends Thread {
 
 			dos.writeUTF("Idioma actualizado con éxito.");
 			dos.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
 	}
 
 	private void crearReunion(ObjectInputStream ois, DataOutputStream dos) {
@@ -203,8 +211,8 @@ public class HiloServidor extends Thread {
 
 	}
 
-	private void obtenerProfesoresAlumno(DataInputStream dis, ObjectOutputStream oos) {
-		try {
+	private void obtenerProfesoresAlumno(DataInputStream dis, ObjectOutputStream oos) throws IOException {
+
 			int tipo = dis.readInt();
 
 			// SI NO ES PROFESOR
@@ -214,22 +222,17 @@ public class HiloServidor extends Thread {
 				oos.writeObject(new Users().getAlumnos());
 			}
 			oos.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	
 	}
 
 	// Aqui para abajo es compartido
-	private void cambiarEstadoReunion(DataInputStream dis, ObjectOutputStream oos) {
+	private void cambiarEstadoReunion(DataInputStream dis, ObjectOutputStream oos) throws IOException {
 		// TODO Auto-generated method stub
-		try {
+	
 			int idReunion = dis.readInt();
 			String estado = dis.readUTF();
 			new Reuniones().cambiarEstadoReunion(idReunion, estado);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 	}
 
 	// BLOQUEADO PARA ESTE SPRING
@@ -240,14 +243,52 @@ public class HiloServidor extends Thread {
 			int idUsuario = (int) dis.readInt();
 			ArrayList<Reuniones> reuniones = new Reuniones().getReunionesById(idUsuario);
 			String[][] reunionesModelo = new Reuniones().getModeloReuniones(reuniones);
-			oos.writeObject(reuniones);
+
+
+			String[][] horario = new Users().getHorarioById(idUsuario);
+
+			String[][] horarioJuntado = juntarHorarios(reunionesModelo, horario);
+
+			oos.writeObject(horarioJuntado);
 			oos.flush();
-			oos.writeObject(reunionesModelo);
-			oos.flush();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 	}
+
+	private String[][] juntarHorarios(String[][] reunionesModelo, String[][] horario) {
+		// TODO Auto-generated method stub
+		int filas = horario.length;
+		int columnas = horario[0].length;
+
+		String[][] resultado = new String[filas][columnas];
+
+		for (int i = 0; i < filas; i++) {
+			for (int j = 0; j < columnas; j++) {
+				String clase = horario[i][j];
+				String reunion = reunionesModelo[i][j];
+
+				if (!clase.isEmpty() && !reunion.isEmpty()) {
+					resultado[i][j] = clase + " / " + reunion;
+				} else if (!clase.isEmpty()) {
+					resultado[i][j] = clase;
+				} else if (!reunion.isEmpty()) {
+					resultado[i][j] = reunion;
+				} else {
+					resultado[i][j] = "";
+				}
+			}
+		}
+
+		return resultado;
+	}
+
+
+
+
+
 
 	private void verOtrosHorarios(DataInputStream dis, ObjectOutputStream oos) { // TODO Auto-generated method stub
 		try {
@@ -299,4 +340,9 @@ public class HiloServidor extends Thread {
 			e.printStackTrace();
 		}
 	}
+
+
+
+
+
 }
