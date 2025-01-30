@@ -30,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 import modelo.Centros;
 import modelo.Profesor;
 import modelo.Reuniones;
+import modelo.Users;
 import vista.Principal;
 import vista.Principal.enumAcciones;
 
@@ -220,32 +221,61 @@ public class Controlador implements ActionListener, MouseListener {
 		}
 		;
 	}
-
+	
 	private void cargarPendiendes() {
-		// TODO Auto-generated method stub
-		DefaultTableModel modelo = new DefaultTableModel(
-				new String[] { "Titulo", "Asunto", "Centro", "Aula", "Fecha", "Estado" }, 0) {
-			private static final long serialVersionUID = 1L;
+	    
+        DefaultTableModel modelo = new DefaultTableModel(
+                new String[] { "Titulo", "Asunto", "Poblacion", "Centro", "Aula", "Fecha", "Estado" }, 0) {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; 
+            }
+        };
 
-		};
-		for (Reuniones reunion : reuniones) {
-			String centroReu = "";
-			for (Centros centro : centros) {
-				if (centro.getIdCentro() == Integer.parseInt(reunion.getIdCentro())) {
-					centroReu = centro.getNombre();
-				}
-			}
-			Object[] fila = { reunion.getTitulo(), reunion.getAsunto(), centroReu, reunion.getAula(),
-					reunion.getFecha().toString(), reunion.getEstado() };
-			modelo.addRow(fila);
-		}
-		this.vistaPrincipal.getPanelTareas().getTablaHorario().setModel(modelo);
-	}
+    
+        for (Reuniones reunion : reuniones) {
+            String centroReu = "";
+            String poblacion = "";
+
+            for (Centros centro : centros) {
+                if (centro.getIdCentro() == Integer.parseInt(reunion.getIdCentro())) {
+                    centroReu = centro.getNombre();
+                    poblacion = centro.getPoblacion();
+                }
+            }
+
+            // Crear la fila con los datos
+            Object[] fila = { reunion.getTitulo(), reunion.getAsunto(), poblacion, centroReu, reunion.getAula(),
+                    reunion.getFecha().toString(), reunion.getEstado() };
+            modelo.addRow(fila);
+        }
+        JTable tabla = this.vistaPrincipal.getPanelTareas().getTablaHorario();
+        tabla.setModel(modelo);
+        DefaultTableCellRenderer renderizador = new DefaultTableCellRenderer() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                    boolean hasFocus, int row, int column) {
+                
+                JTextArea textArea = new JTextArea();
+                textArea.setText(value == null ? "" : value.toString());
+                textArea.setWrapStyleWord(true); 
+                textArea.setLineWrap(true); 
+
+                return textArea;
+            }
+        };
+
+        for (int i = 0; i < tabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(renderizador);
+        }
+
+        
+        tabla.setRowHeight(50); 
+    }
 
 	private void incializarServidor() {
 		// TODO Auto-generated method stub
@@ -351,24 +381,63 @@ public class Controlador implements ActionListener, MouseListener {
 		this.vistaPrincipal.mVisualizarPaneles(enumAcciones.CARGAR_PANEL_HORARIO);
 
 		try {
+			// Horario Reuniones
 			dos.writeInt(4);
 			dos.flush();
 			dos.writeInt(id);
 			dos.flush();
+			String[][] horarioReuniones = (String[][]) ois.readObject();
+			
+			// Horario Profesor
+			dos.writeInt(2);
+			dos.flush();
+			dos.writeInt(id);
+			dos.flush();
+			String[][] horarioP = (String[][]) ois.readObject();
+		
+			
+			String[][] horarioJuntado = juntarHorarios(horarioReuniones, horarioP);
 
-			String[][] horario = (String[][]) ois.readObject();
-			dos.writeInt(15);//obtener reuniones
+			dos.writeInt(15);// obtener reuniones
 			dos.flush();
 			dos.writeInt(id);
 			dos.flush();
 			reuniones = (ArrayList<Reuniones>) ois.readObject();
-			cargarHorario(horario, this.vistaPrincipal.getPanelHorario().getTablaHorario());
+
+			cargarHorario(horarioJuntado, this.vistaPrincipal.getPanelHorario().getTablaHorario());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 	}
 
+	private String[][] juntarHorarios(String[][] reunionesModelo, String[][] horario) {
+		// TODO Auto-generated method stub
+		int filas = horario.length;
+		int columnas = horario[0].length;
+
+		String[][] resultado = new String[filas][columnas];
+
+		for (int i = 0; i < filas; i++) {
+			for (int j = 0; j < columnas; j++) {
+				String clase = horario[i][j];
+				String reunion = reunionesModelo[i][j];
+				reunion = (!reunion.isEmpty() && reunion.contains("-")) ? reunion.split(";")[1] : "";
+
+				if (!clase.isEmpty() && !reunion.isEmpty()) {
+					resultado[i][j] = clase + " / " + reunion;
+				} else if (!clase.isEmpty()) {
+					resultado[i][j] = clase;
+				} else if (!reunion.isEmpty()) {
+					resultado[i][j] = reunion;
+				} else {
+					resultado[i][j] = "";
+				}
+			}
+		}
+
+		return resultado;
+	}
 
 	@SuppressWarnings("unchecked")
 	private void mAbrirHorarioOtros() {

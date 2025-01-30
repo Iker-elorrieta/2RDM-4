@@ -243,13 +243,9 @@ public class HiloServidor extends Thread {
 			int idUsuario = (int) dis.readInt();
 			ArrayList<Reuniones> reuniones = new Reuniones().getReunionesById(idUsuario);
 			String[][] reunionesModelo = new Reuniones().getModeloReuniones(reuniones);
+	
 
-
-			String[][] horario = new Users().getHorarioById(idUsuario);
-
-			String[][] horarioJuntado = juntarHorarios(reunionesModelo, horario);
-
-			oos.writeObject(horarioJuntado);
+			oos.writeObject(reunionesModelo);
 			oos.flush();
 
 		} catch (IOException e) {
@@ -258,32 +254,7 @@ public class HiloServidor extends Thread {
 
 	}
 
-	private String[][] juntarHorarios(String[][] reunionesModelo, String[][] horario) {
-		// TODO Auto-generated method stub
-		int filas = horario.length;
-		int columnas = horario[0].length;
 
-		String[][] resultado = new String[filas][columnas];
-
-		for (int i = 0; i < filas; i++) {
-			for (int j = 0; j < columnas; j++) {
-				String clase = horario[i][j];
-				String reunion = reunionesModelo[i][j];
-
-				if (!clase.isEmpty() && !reunion.isEmpty()) {
-					resultado[i][j] = clase + " / " + reunion;
-				} else if (!clase.isEmpty()) {
-					resultado[i][j] = clase;
-				} else if (!reunion.isEmpty()) {
-					resultado[i][j] = reunion;
-				} else {
-					resultado[i][j] = "";
-				}
-			}
-		}
-
-		return resultado;
-	}
 
 
 

@@ -11,59 +11,70 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Centros implements Serializable {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private int idCentro;
-	private String nombre;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private int idCentro;
+    private String nombre;
+    private String poblacion;
 
-	public int getIdCentro() {
-		return idCentro;
-	}
+    public int getIdCentro() {
+        return idCentro;
+    }
 
-	public void setIdCentro(int idCentro) {
-		this.idCentro = idCentro;
-	}
+    public void setIdCentro(int idCentro) {
+        this.idCentro = idCentro;
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-	public Centros(int idCentro, String nombre) {
+    public String getPoblacion() {
+        return poblacion;
+    }
 
-		this.idCentro = idCentro;
-		this.nombre = nombre;
-	}
+    public void setPoblacion(String poblacion) {
+        this.poblacion = poblacion;
+    }
 
-	public Centros() {
-		// TODO Auto-generated constructor stub
-	}
+    public Centros(int idCentro, String nombre, String poblacion) {
 
-	public ArrayList<Centros> obtenerCentros() {
-		final String url = "archivos/Centros-Lat-Lon.json"; 
-		ArrayList<Centros> centros = new ArrayList<>();
-		JsonParser parser = new JsonParser();
-		try {
-			FileReader fr = new FileReader(url);
-			JsonElement datos = parser.parse(fr);
-			JsonObject jsonObject = datos.getAsJsonObject();
-			JsonArray array = jsonObject.getAsJsonArray("CENTROS");
-			Iterator<JsonElement> iter = array.iterator();
-			while (iter.hasNext()) {
-				JsonElement entrada = iter.next();
-				JsonObject objeto = entrada.getAsJsonObject();
-				Centros centro = new Centros(objeto.get("CCEN").getAsInt(), objeto.get("NOM").getAsString());
-				centros.add(centro);
-			}
+        this.idCentro = idCentro;
+        this.nombre = nombre;
+        this.poblacion = poblacion;
+    }
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		return centros;
-	}
+    public Centros() {
+        // TODO Auto-generated constructor stub
+    }
+
+    public ArrayList<Centros> obtenerCentros() {
+        final String url = "archivos/Centros-Lat-Lon.json";
+        ArrayList<Centros> centros = new ArrayList<>();
+        JsonParser parser = new JsonParser();
+        try {
+            FileReader fr = new FileReader(url);
+            JsonElement datos = parser.parse(fr);
+            JsonObject jsonObject = datos.getAsJsonObject();
+            JsonArray array = jsonObject.getAsJsonArray("CENTROS");
+            Iterator<JsonElement> iter = array.iterator();
+            while (iter.hasNext()) {
+                JsonElement entrada = iter.next();
+                JsonObject objeto = entrada.getAsJsonObject();
+                Centros centro = new Centros(objeto.get("CCEN").getAsInt(), objeto.get("NOM").getAsString(),
+                        objeto.get("DMUNIC").getAsString());
+                centros.add(centro);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return centros;
+    }
 }

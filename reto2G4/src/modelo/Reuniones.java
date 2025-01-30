@@ -161,7 +161,7 @@ public class Reuniones implements java.io.Serializable {
 		for (int i = 0; i < reuniones.size(); i++) {
 			Reuniones reunion = (Reuniones) reuniones.get(i);
 			int hora = consegiorHora(reunion.getFecha().toLocalDateTime().getHour());
-			planSemanal[hora][reunion.getFecha().toLocalDateTime().getDayOfWeek().getValue()] = reunion.getTitulo()
+			planSemanal[hora][reunion.getFecha().toLocalDateTime().getDayOfWeek().getValue()] = reunion.getIdReunion() + ";" + reunion.getTitulo()
 					+ ponerEstado(reunion.getEstado());
 		}
 
