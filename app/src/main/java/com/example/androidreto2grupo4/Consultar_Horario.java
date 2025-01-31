@@ -1,17 +1,22 @@
-
 package com.example.androidreto2grupo4;
 
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import modelo.Centros;
+import modelo.Profesor;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,54 +27,71 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import modelo.Centros;
+public class Buscar_Horario_Profesor extends AppCompatActivity {
 
-public class Consultar_Horario extends AppCompatActivity {
     private TableLayout tablaHorario;
     private TableLayout tablaLeyenda;
     private Map<String, String> abreviaturas = new HashMap<>();
-    private Button btnVoler;
+    private Button btnVolver, btnAceptar, btnCargarSuHorario;
+    private Spinner listaProfesores;
+    int id,tipo;
     private DataOutputStream dos;
-    private ObjectOutputStream oos;
-    private DataInputStream dis;
+
     private ObjectInputStream ois;
-    int tipo, usuarioId;
+    private ArrayList<Profesor>profesors;
     ArrayList<Centros> centros;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
             dos = ServerConection.getInstance().getDataOutputStream();
-            dis = ServerConection.getInstance().getDataInputStream();
             ois = ServerConection.getInstance().getObjectInputStream();
-            oos = ServerConection.getInstance().getObjectOutputStream();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_consultar_horario);
+        setContentView(R.layout.activity_buscar_horario_profesor);
         inicializarVariables();
-        usuarioId = getIntent().getIntExtra("idLogin", -1);
+        id = getIntent().getIntExtra("idLogin", -1);
         tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
         centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
-        // Cargar el horario
-        cargarHorario();
-        btnVoler.setOnClickListener(view -> {
-            Intent i = new Intent(Consultar_Horario.this, PaginaPrincipal.class);
-            i.putExtra("idLogin", usuarioId);
+
+        cargarSuHorario();
+        // Cargar la lista de profesores
+        cargarListaProfesores();
+
+        btnAceptar.setOnClickListener(view -> {
+            Profesor profesorSeleccionado = (Profesor) listaProfesores.getSelectedItem();
+            if (profesorSeleccionado != null) {
+                int idProfesor = profesorSeleccionado.getId();
+                cargarHorario(idProfesor);
+            } else {
+                Toast.makeText(this, "Por favor selecciona un profesor", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnVolver.setOnClickListener(view -> {
+            Intent i = new Intent(Buscar_Horario_Profesor.this, PaginaPrincipal.class);
+            i.putExtra("idLogin", id);
             i.putExtra("tipoLogin", tipo);
             i.putExtra("centros", centros);
             startActivity(i);
+        });
+        btnCargarSuHorario.setOnClickListener(view -> {
+            cargarSuHorario();
         });
     }
 
     private void inicializarVariables() {
         tablaHorario = findViewById(R.id.tablaHorario);
         tablaLeyenda = findViewById(R.id.tablaLeyenda);
-        btnVoler = findViewById(R.id.volver);
+        btnCargarSuHorario = findViewById(R.id.btnSuHorario);
+        btnVolver = findViewById(R.id.volver);
+        btnAceptar = findViewById(R.id.aceptar);
+        listaProfesores = findViewById(R.id.listaProfesores);
     }
 
-    private void cargarHorario() {
+    private void cargarSuHorario() {
         new Thread(() -> {
             try {
                 // Solicita el horario
@@ -78,13 +100,13 @@ public class Consultar_Horario extends AppCompatActivity {
                 if (tipo == 3) {
                     dos.writeInt(2);
                     dos.flush();
-                    dos.writeInt(usuarioId);
+                    dos.writeInt(id);
                     dos.flush();
                     horario  = (String[][]) ois.readObject();
                 }else{
                     dos.writeInt(12);
                     dos.flush();
-                    dos.writeInt(usuarioId);
+                    dos.writeInt(id);
                     dos.flush();
                     horario  = (String[][]) ois.readObject();
                 }
@@ -98,13 +120,72 @@ public class Consultar_Horario extends AppCompatActivity {
     }
 
 
-    private String generarAbreviatura(String asignatura) {
+    private void cargarHorario(int IDProfesorBuscar) {
+        new Thread(() -> {
+            try {
+                ServerConection serverConnection = ServerConection.getInstance();
 
+                dos.writeInt(2); // Opción para "ver horario"
+                dos.writeInt(IDProfesorBuscar); // Enviar ID del profesor
+                dos.flush();
+
+                String[][] horario = (String[][]) ois.readObject();
+
+                runOnUiThread(() -> llenarTabla(horario));
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(this, "Error al cargar el horario", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+    private void cargarListaProfesores() {
+        new Thread(() -> {
+            try {
+                ServerConection serverConnection = ServerConection.getInstance();
+
+                Log.d("CargaProfesores", "Enviando solicitud para cargar profesores...");
+
+
+                    dos.writeInt(3); // Opción para "ver otros horarios"
+                    dos.flush();
+                    dos.flush();
+
+                    dos.writeInt((tipo==3)?id:0); // Enviar ID del usuario actual si no es profesor enviamos un 0
+                    dos.flush();
+
+                    Log.d("CargaProfesores", "Esperando respuesta del servidor...");
+                    profesors = (ArrayList<Profesor>) ois.readObject(); // Recibimos la lista de profesores como ArrayList<Profesor>
+
+                Log.d("CargaProfesores", "Lista de profesores recibida, tamaño: " + profesors.size());
+                runOnUiThread(() -> llenarSpinnerProfesores(profesors)); // Llamamos al método de llenar el spinner
+            } catch (IOException e) {
+                Log.e("CargaProfesores", "Error de entrada/salida", e);
+                runOnUiThread(() -> Toast.makeText(this, "Error al cargar la lista de profesores", Toast.LENGTH_SHORT).show());
+            } catch (ClassNotFoundException e) {
+                Log.e("CargaProfesores", "Error al convertir la respuesta del servidor", e);
+                runOnUiThread(() -> Toast.makeText(this, "Error de formato en la respuesta del servidor", Toast.LENGTH_SHORT).show());
+            } catch (Exception e) {
+                Log.e("CargaProfesores", "Error inesperado", e);
+                runOnUiThread(() -> Toast.makeText(this, "Ocurrió un error inesperado", Toast.LENGTH_SHORT).show());
+            }
+        }).start();
+    }
+
+
+    private void llenarSpinnerProfesores(ArrayList<Profesor> profesoresList) {
+        // Crea el adaptador usando la lista de profesores
+        ArrayAdapter<Profesor> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, profesoresList);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Configura el adaptador en el Spinner
+        listaProfesores.setAdapter(adapter);
+    }
+    private String generarAbreviatura(String asignatura) {
         String abreviatura = "";
         String[] palabras = asignatura.trim().split(" ");
         for (String palabra : palabras) {
-            if (!palabra.equalsIgnoreCase("a") && !palabra.equalsIgnoreCase("y") && !palabra.equalsIgnoreCase("de")
-                    && !palabra.isEmpty()) {
+            if (!palabra.equalsIgnoreCase("a") && !palabra.equalsIgnoreCase("y") && !palabra.equalsIgnoreCase("de") && !palabra.isEmpty()) {
                 abreviatura += palabra.charAt(0);
             }
         }
@@ -112,18 +193,23 @@ public class Consultar_Horario extends AppCompatActivity {
     }
 
     private void llenarTabla(String[][] horario) {
+        if (tablaHorario.getChildCount() > 1) {
+            tablaHorario.removeViews(1, tablaHorario.getChildCount() - 1);
+        }
         for (int i = 0; i < horario.length; i++) {
             TableRow fila = new TableRow(this);
             for (int j = 0; j < horario[i].length; j++) {
                 TextView celda = new TextView(this);
+
                 String asignatura = horario[i][j];
                 String abreviado = asignatura;
+
                 if (j != 0) {
                     abreviado = generarAbreviatura(asignatura);
                     abreviaturas.put(asignatura, abreviado);
                 }
-                celda.setText(asignatura != null ? abreviado : "");
 
+                celda.setText(asignatura != null ? abreviado : "");
                 celda.setPadding(8, 8, 8, 8);
                 celda.setGravity(Gravity.CENTER);
                 celda.setBackgroundColor(i % 2 == 0 ? Color.LTGRAY : Color.WHITE);
@@ -132,11 +218,11 @@ public class Consultar_Horario extends AppCompatActivity {
             tablaHorario.addView(fila);
         }
 
-        // Llenar la leyenda
         llenarLeyenda();
     }
 
     private void llenarLeyenda() {
+        tablaLeyenda.removeAllViews();
         for (Map.Entry<String, String> entry : abreviaturas.entrySet()) {
             TableRow fila = new TableRow(this);
 
@@ -154,5 +240,4 @@ public class Consultar_Horario extends AppCompatActivity {
             tablaLeyenda.addView(fila);
         }
     }
-
 }
