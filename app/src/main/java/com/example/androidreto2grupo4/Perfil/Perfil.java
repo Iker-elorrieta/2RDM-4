@@ -40,8 +40,6 @@ public class Perfil extends AppCompatActivity {
     TextView nombre;
     CardView btnAtras;
     CardView btnInfoPersonal;
-    String es = "es";
-    String eu = "eu";
     Button btnIngles;
     Button btnEspanol;
     Users usuarioLogeado;
@@ -53,9 +51,7 @@ public class Perfil extends AppCompatActivity {
     ImageView imagen;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private Uri photoURI;
-    private String currentPhotoPath;
+
 int id,tipoUsuario;
     @SuppressLint("WrongViewCast")
     @Override

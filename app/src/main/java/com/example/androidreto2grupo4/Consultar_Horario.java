@@ -18,16 +18,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import modelo.Centros;
 import modelo.Profesor;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Buscar_Horario_Profesor extends AppCompatActivity {
+public class Consultar_Horario extends AppCompatActivity {
 
     private TableLayout tablaHorario;
     private TableLayout tablaLeyenda;
@@ -50,7 +48,7 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
             throw new RuntimeException(e);
         }
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buscar_horario_profesor);
+        setContentView(R.layout.activity_consultar_horario);
         inicializarVariables();
         id = getIntent().getIntExtra("idLogin", -1);
         tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
@@ -71,7 +69,7 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
         });
 
         btnVolver.setOnClickListener(view -> {
-            Intent i = new Intent(Buscar_Horario_Profesor.this, PaginaPrincipal.class);
+            Intent i = new Intent(Consultar_Horario.this, PaginaPrincipal.class);
             i.putExtra("idLogin", id);
             i.putExtra("tipoLogin", tipo);
             i.putExtra("centros", centros);
@@ -92,6 +90,8 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
     }
 
     private void cargarSuHorario() {
+
+       /*
         new Thread(() -> {
             try {
                 // Solicita el horario
@@ -117,6 +117,8 @@ public class Buscar_Horario_Profesor extends AppCompatActivity {
                 runOnUiThread(() -> Toast.makeText(this, "Error al cargar el horario", Toast.LENGTH_SHORT).show());
             }
         }).start();
+
+        */
     }
 
 

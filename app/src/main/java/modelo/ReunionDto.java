@@ -162,7 +162,7 @@ public class ReunionDto implements Serializable {
             int hora = consegiorHora(fechaReunion.getHour());
             int diaSemana = fechaReunion.getDayOfWeek().getValue(); // Lunes = 1, Domingo = 7
 
-            planSemanal[hora][diaSemana] = reunion.getIdReunion() + ";" + reunion.getTitulo() + ponerEstado(reunion.getEstado());
+            planSemanal[hora][diaSemana] = reunion.getIdReunion() +"id:"+ reunion.getTitulo() + ponerEstado(reunion.getEstado());
         }
 
 
@@ -198,5 +198,24 @@ public class ReunionDto implements Serializable {
         }
         return hora;
     }
+
+    @Override
+    public String toString() {
+        return "ReunionDto{" +
+                "idReunion=" + idReunion +
+                ", usersByProfesorId=" + usersByProfesorId +
+                ", usersByAlumnoId=" + usersByAlumnoId +
+                ", nombreP='" + nombreP + '\'' +
+                ", nombreA='" + nombreA + '\'' +
+                ", estado='" + estado + '\'' +
+                ", estadoEus='" + estadoEus + '\'' +
+                ", idCentro='" + idCentro + '\'' +
+                ", titulo='" + titulo + '\'' +
+                ", asunto='" + asunto + '\'' +
+                ", aula='" + aula + '\'' +
+                ", fecha=" + fecha +
+                '}';
+    }
+
 
 }

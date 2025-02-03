@@ -10,5 +10,30 @@
     <color name="azul">#6aacff</color>
     <color name="ic_gym_launcher_background">#FFFFFF</color>
     <color name="gray">#999797</color>
+    <color name="fondo_claro">#EAEFF2</color>  <!-- Blanco con un leve tono azul -->
+    <color name="gris_claro">#D3D3D2</color>  <!-- Gris claro -->
+    <!-- Colores generales -->
+    <color name="fondo_oscuro">#333333</color> <!-- Fondo oscuro para elementos como botones o títulos -->
 
+    <!-- Colores de texto -->
+    <color name="texto_normal">#212121</color> <!-- Texto normal gris oscuro -->
+    <color name="texto_claro">#BDBDBD</color> <!-- Texto claro gris más suave -->
+    <color name="texto_enfasis">#000000</color> <!-- Texto de título o importante -->
+
+    <!-- Colores de botones -->
+    <color name="boton_fondo">#2196F3</color> <!-- Fondo de botones azul -->
+    <color name="boton_texto">#FFFFFF</color> <!-- Texto de los botones blanco -->
+
+    <!-- Colores para interacciones -->
+    <color name="interaccion_texto">#1565C0</color> <!-- Color para links o botones secundarios -->
+
+    <!-- Colores para campos de entrada -->
+    <color name="campo_fondo">#FFFFFF</color> <!-- Fondo de los campos de entrada -->
+    <color name="campo_borde">#E0E0E0</color> <!-- Borde de los campos de entrada -->
+
+    <!-- Colores de advertencia -->
+    <color name="advertencia">#D32F2F</color> <!-- Rojo para advertencias o errores -->
+
+    <!-- Colores de éxito -->
+    <color name="exito">#388E3C</color> <!-- Verde para estados exitosos -->
 </resources>

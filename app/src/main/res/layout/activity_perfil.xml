@@ -48,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:contentDescription="@string/todo"
+                    tools:ignore="ImageContrastCheck"
                     app:srcCompat="@drawable/ic_perfil" />
 
                 <TextView

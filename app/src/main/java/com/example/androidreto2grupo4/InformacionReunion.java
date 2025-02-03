@@ -1,19 +1,15 @@
-package com.example.androidreto2grupo4.Perfil;
+package com.example.androidreto2grupo4;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-
-import modelo.Users;
-import com.example.androidreto2grupo4.R;
-import com.example.androidreto2grupo4.ServerConection;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,18 +18,21 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import modelo.Centros;
+import modelo.ReunionDto;
+import modelo.Users;
 
-public class InformacionPersonal extends AppCompatActivity {
 
+public class InformacionReunion extends AppCompatActivity {
+    TextView titulo;
     EditText texto;
     CardView btnAtras;
     private DataOutputStream dos;
     private ObjectOutputStream oos;
     private DataInputStream dis;
     private ObjectInputStream ois;
-    int idUsuario, tipo;
-
-
+    int usuarioId,idReunion, tipo;
+    ArrayList<Centros> centros;
 
 
     @Override
@@ -52,54 +51,65 @@ public class InformacionPersonal extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_informacion_personal);
 
-        idUsuario = getIntent().getIntExtra("idLogin", -1); // ID del usuario logueado
-        tipo = getIntent().getIntExtra("tipoLogin", -1); // Tipo del usuario (Alumno o Profesor)
-        Log.d("ID", "Id a nivel del InformacionP " + idUsuario);
+        inicializarVariable();
 
+        Log.d("InformacionReunion", "Id de la reunion " + idReunion);
+        titulo.setText("Informacion Reunion");
         cargarInfo();
 
-    volverAtras();
+        btnAtras.setOnClickListener(view -> {
+            Intent i = new Intent(InformacionReunion.this, PaginaPrincipal.class);
+            i.putExtra("idLogin", usuarioId);
 
+            i.putExtra("tipoLogin", tipo);
+            i.putExtra("centros", centros);
+            startActivity(i);
+        });
+    }
 
+    private void inicializarVariable() {
+        usuarioId = getIntent().getIntExtra("idLogin", -1);
+        tipo = getIntent().getIntExtra("tipoLogin", -1); // -1 como valor predeterminado si no se envió el ID
+        centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
+        idReunion= getIntent().getIntExtra("idReunion", -1);
+
+        titulo = findViewById(R.id.tituloV);
+        btnAtras = findViewById(R.id.cardviewAtras);
+        texto = findViewById(R.id.nombreInfoPersonal);
 
     }
 
     private void cargarInfo() {
-        texto = findViewById(R.id.nombreInfoPersonal);
         new Thread(() -> {
             try {
-                dos.writeInt(10); // Opcion para "obtenerPerfil"
+                dos.writeInt(17); // Opcion para obtenr Informacion Reunion
+                dos.flush();
+                dos.writeInt(idReunion); // Opcion para obtenr Informacion Reunion
                 dos.flush();
 
-                dos.writeInt(idUsuario);
-                dos.flush();
+                ReunionDto r = (ReunionDto) ois.readObject();
 
-                dos.writeInt(tipo); // Tipo de usuario: 3 profesor o 4 alumno
-                dos.flush();
+                String  datosReunion = r.toString();
+                Log.d("InformacionReunion", "Informacion datos " + datosReunion);
 
-                Users datosUser = (Users) ois.readObject();
+                Log.d("InformacionReunion", "Id a nivel del InformacionP " + idReunion);
 
                 runOnUiThread(() -> {
-                    if (tipo == 3) {
-                        texto.setText(datosUser.informacionPersonalP());
+                        texto.setText(datosReunion);
 
-                    } else {
-                        texto.setText(datosUser.informacionPersonalA());
-
-                    }
                 });
 
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(this, "Error al cargar usuarios: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }
 
 
-
     private void volverAtras() {
-        btnAtras = findViewById(R.id.cardviewAtras);
         btnAtras.setOnClickListener(view -> finish());
     }
 

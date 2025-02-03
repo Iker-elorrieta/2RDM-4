@@ -2,7 +2,6 @@ package com.example.androidreto2grupo4;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,9 +24,7 @@ import java.util.ArrayList;
 
 public class PaginaPrincipal extends AppCompatActivity {
 
-    private TextView holaUsuario;
     private CardView btnOtrosHorarios;
-    private CardView btnCrearReunion;
     private CardView consultarHorario;
     private CardView consultarReuniones, alumnosProfe;
     private ImageButton btnMenu;
@@ -54,7 +51,6 @@ public class PaginaPrincipal extends AppCompatActivity {
            centros = (ArrayList<Centros>) getIntent().getSerializableExtra("centros");
 
            usuarioLogeado = (Users) getIntent().getSerializableExtra("usuarioLogeado");
-           nombre = "introducir un nombre";
 
         // Inicialización de vistas
         initializeViews();
@@ -71,13 +67,6 @@ public class PaginaPrincipal extends AppCompatActivity {
         });
 
 
-        btnOtrosHorarios.setOnClickListener(view -> {
-            Intent intentPPC = new Intent(PaginaPrincipal.this, Buscar_Horario_Profesor.class);
-            intentPPC.putExtra("idLogin", idLogin);
-            intentPPC.putExtra("tipoLogin", tipo);
-            intentPPC.putExtra("centros", centros);
-            startActivity(intentPPC);
-        });
 
         consultarReuniones.setOnClickListener(view -> {
             Intent intentPPC = new Intent(PaginaPrincipal.this, Consultar_Reunion.class);
@@ -87,13 +76,7 @@ public class PaginaPrincipal extends AppCompatActivity {
             startActivity(intentPPC);
         });
 
-        btnCrearReunion.setOnClickListener(view -> {
-            Intent intentPPC = new Intent(PaginaPrincipal.this, Crear_Reunion.class);
-            intentPPC.putExtra("idLogin", idLogin);
-            intentPPC.putExtra("centros", centros);
-            intentPPC.putExtra("tipoLogin", tipo);
-            startActivity(intentPPC);
-        });
+
 
         alumnosProfe.setOnClickListener(view -> {
             Intent intentPPC = new Intent(PaginaPrincipal.this, DatosEstudiantes.class);
@@ -108,11 +91,7 @@ public class PaginaPrincipal extends AppCompatActivity {
     private void initializeViews() {
         drawerLayout = findViewById(R.id.drawer_layout);
         btnMenu = findViewById(R.id.imageButtonMenu);
-        holaUsuario = findViewById(R.id.textViewHolaUsuario);
-        holaUsuario.append(nombre);
-        btnCrearReunion = findViewById(R.id.cardViewBtnCrear);
         consultarHorario = findViewById(R.id.cardViewConsultarHorario);
-        btnOtrosHorarios = findViewById(R.id.cardViewOtrosHorarios);
         consultarReuniones = findViewById(R.id.cardViewConsultarReunion);
         alumnosProfe = findViewById(R.id.btnAlumnosProfe);
         btnMenu.setOnClickListener(view -> {

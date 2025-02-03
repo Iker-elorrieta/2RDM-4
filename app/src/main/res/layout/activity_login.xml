@@ -4,18 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    style="@style/pantalla"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
+    android:padding="20dp"
+    android:background="@color/fondo_claro"
     android:fitsSystemWindows="true"
     tools:context=".Login">
 
+    <!-- Selector de idioma -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:layout_gravity="end"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/textViewES"
@@ -24,7 +28,11 @@
             android:text="ES"
             android:textColor="@android:color/black"
             android:textSize="16sp"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginEnd="8dp"
+            android:textStyle="bold"
+            android:padding="5dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <TextView
             android:id="@+id/textViewEU"
@@ -32,106 +40,116 @@
             android:layout_height="wrap_content"
             android:text="EU"
             android:textColor="@android:color/black"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="true"/>
     </LinearLayout>
 
-    <LinearLayout
+    <!-- Contenedor principal del login -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        android:background="@color/white">
 
-        <TextView
-            android:id="@+id/textViewTituloL"
-            style="@style/titulo"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/textViewTituloL"
-            android:textSize="35sp"
-            android:layout_marginTop="16dp" />
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/textViewSubtituloL"
-            style="@style/textoSubtitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/textViewSubtituloL"
-            android:textSize="16sp"
-            android:layout_marginTop="8dp" />
+            <!-- Título -->
+            <TextView
+                android:id="@+id/textViewTituloL"
+                style="@style/titulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textViewTituloL"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="8dp"/>
 
-        <EditText
-            android:id="@+id/editTextUsuarioL"
-            android:layout_width="280dp"
-            android:layout_height="57dp"
-            android:background="@drawable/edit_text_border"
-            android:drawableStart="@drawable/ic_usuario"
-            android:drawablePadding="5dp"
-            android:hint="@string/editTextUsuarioL"
-            android:inputType="text"
-            android:paddingStart="10dp"
-            android:layout_marginTop="16dp" />
+            <!-- Subtítulo -->
+            <TextView
+                android:id="@+id/textViewSubtituloL"
+                style="@style/textoSubtitulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textViewSubtituloL"
+                android:textSize="16sp"
+                android:textColor="@android:color/darker_gray"
+                android:gravity="center"/>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/editTextContraseñaL"
-            app:passwordToggleEnabled="true"
-            android:layout_marginTop="8dp">
-
-            <EditText
-                android:id="@+id/editTextPasswordL"
+            <!-- Campo Usuario -->
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:background="@drawable/edit_text_border"
-                android:drawableStart="@drawable/ic_candado"
-                android:drawablePadding="5dp"
-                android:inputType="textPassword"
-                android:paddingStart="10dp" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:hint="@string/editTextUsuarioL"
+                android:layout_marginTop="16dp">
 
-        <Button
-            android:id="@+id/btnLogin"
-            style="@style/boton"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/diseno_boton"
-            android:text="@string/btnLogin"
-            android:layout_marginTop="16dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextUsuarioL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:drawableStart="@drawable/ic_usuario"
+                    android:paddingStart="10dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textViewOlvidar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/textviewOlvidar"
-            android:textColor="@color/azul"
-            android:layout_marginTop="8dp" />
+            <!-- Campo Contraseña -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/editTextContraseñaL"
+                android:layout_marginTop="8dp"
+                app:endIconMode="password_toggle">
 
-        <TextView
-            android:id="@+id/textViewPregunta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/textViewRegistro"
-            android:layout_marginTop="16dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextPasswordL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:drawableStart="@drawable/ic_candado"
+                    android:paddingStart="10dp"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/textViewCrear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:text="@string/textViewCrearAqui"
-            android:textColor="@color/azul"
-            android:layout_marginTop="8dp" />
-    </LinearLayout>
+            <!-- Botón Login -->
+            <Button
+                android:id="@+id/btnLogin"
+                style="@style/boton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/diseno_boton"
+                android:text="@string/btnLogin"
+                android:layout_marginTop="16dp"/>
 
+            <!-- Olvidaste tu contraseña -->
+            <TextView
+                android:id="@+id/textViewOlvidar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textviewOlvidar"
+                android:textColor="@color/azul"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:focusable="true"/>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Logo -->
     <ImageView
         android:id="@+id/imageView8"
-        android:layout_width="181dp"
-        android:layout_height="78dp"
+        android:layout_width="160dp"
+        android:layout_height="80dp"
         android:layout_gravity="center"
         android:contentDescription="@string/todo"
         android:scaleType="fitXY"
         app:srcCompat="@mipmap/eem_logo"
-        android:layout_marginTop="16dp" />
-
+        android:layout_marginTop="16dp"/>
 </LinearLayout>

@@ -32,7 +32,7 @@ import java.util.Locale;
 import modelo.Centros;
 import modelo.EstadoReunionES;
 import modelo.EstadoReunionEU;
-import modelo.Reuniones;
+import modelo.ReunionDto;
 import modelo.Users;
 
 public class Crear_Reunion extends AppCompatActivity {
@@ -248,9 +248,9 @@ public class Crear_Reunion extends AppCompatActivity {
             Timestamp fechaTimestamp = new Timestamp(calendar.getTimeInMillis());
 
             // Conexcion con el servidor para añadirla
-            Reuniones nuevaReunion = new Reuniones(profesorId, alumnoId, estado, estadoEus, String.valueOf(idCentro), titulo, asunto, aula, fechaTimestamp);
+     //       ReunionDto nuevaReunion = new ReunionDto(profesorId, alumnoId, estado, estadoEus, String.valueOf(idCentro), titulo, asunto, aula, fechaTimestamp);
 
-            enviarReunionAlServidor(nuevaReunion);
+          //  enviarReunionAlServidor(nuevaReunion);
 
                 Intent i = new Intent(Crear_Reunion.this, PaginaPrincipal.class);
                 i.putExtra("idLogin", id);
@@ -265,7 +265,7 @@ public class Crear_Reunion extends AppCompatActivity {
     }
 
 
-    private void enviarReunionAlServidor(Reuniones reunion) {
+    private void enviarReunionAlServidor(ReunionDto reunion) {
         new Thread(() -> {
             try {
                 dos.writeInt(8); // Opción Crear reunion
